@@ -1,0 +1,24 @@
+{
+  "name": "TSLA Analista — Acciones de Tesla",
+  "short_name": "TSLA",
+  "description": "Analista de acciones de Tesla en tiempo real con alertas de precio",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#e31937",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Ver cotización",
+      "short_name": "Precio",
+      "description": "Ver el precio actual de TSLA",
+      "url": "./",
+      "icons": [{ "src": "icon.svg", "sizes": "any" }]
+    }
+  ],
+  "categories": ["finance", "utilities"],
+  "lang": "es"
+}

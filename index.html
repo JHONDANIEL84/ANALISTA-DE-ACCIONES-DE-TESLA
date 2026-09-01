@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" id="themeColor" content="#0a0a0f">
+  <meta name="description" content="Analista de Acciones de Tesla — TSLA en tiempo real">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <title>TSLA Analista</title>
+  <link rel="preconnect" href="https://s3.tradingview.com">
+  <style>
+    /* ── TOKENS ───────────────────────────────────────────── */
+    :root {
+      --bg0: #0a0a0f;
+      --bg1: #12121a;
+      --bg2: #1a1a28;
+      --surface: rgba(22,22,38,0.82);
+      --border: rgba(255,255,255,0.07);
+      --red: #e31937;
+      --red-dim: rgba(227,25,55,0.18);
+      --green: #22c55e;
+      --green-dim: rgba(34,197,94,0.15);
+      --amber: #f59e0b;
+      --amber-dim: rgba(245,158,11,0.15);
+      --text0: #f4f4f6;
+      --text1: #a1a1b5;
+      --text2: #6b6b82;
+      --font: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      --r-card: 20px;
+      --r-sm: 12px;
+      --shadow: 0 20px 40px rgba(0,0,0,0.5);
+      color-scheme: dark;
+    }
+    [data-theme="light"] {
+      --bg0: #f0f0f5;
+      --bg1: #ffffff;
+      --bg2: #e8e8f0;
+      --surface: rgba(255,255,255,0.92);
+      --border: rgba(0,0,0,0.08);
+      --text0: #0f0f1a;
+      --text1: #4a4a6a;
+      --text2: #8888a0;
+      --shadow: 0 20px 40px rgba(0,0,0,0.12);
+      color-scheme: light;
+    }
+
+    /* ── BASE ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; font-family: var(--font);
+      background: var(--bg0); color: var(--text0);
+      min-height: 100dvh;
+      background-image: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(227,25,55,0.12), transparent);
+      transition: background 0.3s, color 0.3s;
+    }
+    main {
+      max-width: 640px; margin: auto;
+      padding: calc(16px + env(safe-area-inset-top)) 16px calc(32px + env(safe-area-inset-bottom));
+    }
+
+    /* ── HEADER ───────────────────────────────────────────── */
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px; padding: 0 2px;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--red); display: grid; place-items: center;
+      box-shadow: 0 4px 14px rgba(227,25,55,0.4);
+    }
+    .logo-icon svg { width: 22px; height: 22px; }
+    h1 { font-size: 1.15rem; font-weight: 700; margin: 0; letter-spacing: -0.02em; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .pill {
+      font-size: 0.72rem; font-weight: 600; padding: 5px 10px;
+      border-radius: 99px; background: var(--bg2); color: var(--text1);
+      border: 1px solid var(--border); transition: all 0.3s;
+    }
+    .pill.live { color: var(--green); border-color: rgba(34,197,94,0.3); background: var(--green-dim); }
+    .pill.error { color: var(--red); border-color: rgba(227,25,55,0.3); background: var(--red-dim); }
+    .icon-btn {
+      width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--border);
+      background: var(--surface); color: var(--text1); cursor: pointer;
+      display: grid; place-items: center; font-size: 1rem;
+      transition: background 0.2s, color 0.2s; backdrop-filter: blur(8px);
+    }
+    .icon-btn:hover { background: var(--bg2); color: var(--text0); }
+
+    /* ── CARDS ────────────────────────────────────────────── */
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-card); padding: 20px; margin-bottom: 14px;
+      box-shadow: var(--shadow); backdrop-filter: blur(12px);
+      transition: background 0.3s, border 0.3s;
+    }
+    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .card-title { font-size: 0.8rem; font-weight: 600; color: var(--text1); text-transform: uppercase; letter-spacing: 0.08em; }
+
+    /* ── PRICE HERO ───────────────────────────────────────── */
+    .price-row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 8px 0 12px; }
+    .symbol-badge { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; color: var(--text2); }
+    #price {
+      font-size: clamp(2.4rem, 10vw, 3.4rem); font-weight: 800;
+      letter-spacing: -0.05em; line-height: 1; color: var(--text0);
+      transition: color 0.4s;
+    }
+    #price.flash-up { animation: flashUp 0.6s ease; }
+    #price.flash-down { animation: flashDown 0.6s ease; }
+    @keyframes flashUp { 0%,100%{color:var(--text0)} 40%{color:var(--green)} }
+    @keyframes flashDown { 0%,100%{color:var(--text0)} 40%{color:var(--red)} }
+    #change { font-size: 1rem; font-weight: 700; transition: color 0.3s; }
+    .up { color: var(--green); } .down { color: var(--red); } .neutral { color: var(--text1); }
+    .muted { color: var(--text1); font-size: 0.82rem; }
+    .muted-sm { color: var(--text2); font-size: 0.75rem; }
+    #updated { margin-top: 6px; }
+
+    /* ── TREND BADGE ──────────────────────────────────────── */
+    .trend-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 700;
+      margin-top: 8px;
+    }
+    .trend-up { background: var(--green-dim); color: var(--green); }
+    .trend-down { background: var(--red-dim); color: var(--red); }
+    .trend-neutral { background: var(--amber-dim); color: var(--amber); }
+
+    /* ── CONTROLS ─────────────────────────────────────────── */
+    .btn-row { display: flex; gap: 8px; margin-top: 14px; }
+    .btn {
+      flex: 1; border: 0; border-radius: var(--r-sm); padding: 11px 14px;
+      font-weight: 700; font-size: 0.87rem; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-primary { background: var(--red); color: white; box-shadow: 0 4px 14px rgba(227,25,55,0.35); }
+    .btn-primary:hover { filter: brightness(1.1); }
+    .btn-secondary { background: var(--bg2); color: var(--text0); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--bg1); }
+    .btn:disabled { opacity: 0.45; pointer-events: none; }
+    #refreshTimer { font-size: 0.72rem; color: var(--text2); margin-top: 6px; text-align: center; }
+
+    /* ── METRICS GRID ─────────────────────────────────────── */
+    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .metric {
+      background: var(--bg1); border: 1px solid var(--border);
+      border-radius: var(--r-sm); padding: 12px 14px;
+    }
+    .metric .label { font-size: 0.72rem; color: var(--text2); margin-bottom: 4px; }
+    .metric .value { font-size: 1.05rem; font-weight: 700; color: var(--text0); }
+    .metric .value.up { color: var(--green); }
+    .metric .value.down { color: var(--red); }
+
+    /* ── SPARKLINE ────────────────────────────────────────── */
+    #sparkWrap {
+      background: var(--bg1); border-radius: var(--r-sm);
+      border: 1px solid var(--border); padding: 12px; margin-top: 10px;
+    }
+    #sparkTitle { font-size: 0.72rem; color: var(--text2); margin-bottom: 6px; }
+    #sparkSvg { width: 100%; height: 60px; display: block; }
+
+    /* ── TRADINGVIEW CHART ────────────────────────────────── */
+    #chart { border-radius: var(--r-sm); overflow: hidden; min-height: 230px; }
+    #chart > div { height: 230px !important; }
+
+    /* ── ALERTS ───────────────────────────────────────────── */
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    label { display: block; color: var(--text1); font-size: 0.8rem; margin-bottom: 5px; font-weight: 500; }
+    input[type="number"], input[type="text"], select {
+      width: 100%; border: 1px solid var(--border); border-radius: var(--r-sm);
+      padding: 11px 12px; background: var(--bg1); color: var(--text0);
+      font-size: 0.95rem; font-family: var(--font); outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus { border-color: var(--red); }
+    #alertState { margin-top: 10px; min-height: 1.2em; }
+
+    /* ── SETTINGS ─────────────────────────────────────────── */
+    .settings-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .settings-row:last-child { margin-bottom: 0; }
+    .settings-label { font-size: 0.85rem; color: var(--text1); font-weight: 500; }
+    .settings-sub { font-size: 0.72rem; color: var(--text2); margin-top: 2px; }
+    .key-wrap { position: relative; flex: 1; margin-left: 12px; max-width: 220px; }
+    .key-wrap input { padding-right: 38px; font-size: 0.82rem; }
+    .key-eye {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--text2); cursor: pointer; font-size: 1rem;
+    }
+    select { font-size: 0.82rem; padding: 9px 10px; }
+
+    /* ── TOAST ────────────────────────────────────────────── */
+    #toast {
+      position: fixed; bottom: calc(24px + env(safe-area-inset-bottom)); left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--bg1); border: 1px solid var(--border); border-radius: 99px;
+      padding: 10px 20px; font-size: 0.85rem; font-weight: 600; color: var(--text0);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4); transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+      white-space: nowrap; z-index: 999;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── NOTICE ───────────────────────────────────────────── */
+    .notice {
+      border-left: 3px solid var(--amber); padding: 12px 14px;
+      color: var(--text1); font-size: 0.8rem; line-height: 1.5;
+      border-radius: 0 var(--r-sm) var(--r-sm) 0; background: var(--amber-dim);
+    }
+
+    /* ── SKELETON ─────────────────────────────────────────── */
+    .sk { background: var(--bg2); border-radius: 6px; animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* ── SCROLLBAR ────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--bg2); border-radius: 3px; }
+  </style>
+</head>
+<body>
+<main>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 5.5H20C20 5.5 19 7 11 7C3 7 2 5.5 2 5.5Z" fill="white" opacity="0.9"/>
+          <path d="M8.5 7L11 17.5L13.5 7" fill="white"/>
+        </svg>
+      </div>
+      <div>
+        <h1>TSLA Analista</h1>
+        <div class="muted-sm">Acciones de Tesla en tiempo real</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <span id="status" class="pill">Sin clave</span>
+      <button class="icon-btn" id="themeToggle" title="Cambiar tema">🌙</button>
+    </div>
+  </header>
+
+  <!-- PRECIO PRINCIPAL -->
+  <section class="card" aria-live="polite" aria-label="Cotización de Tesla">
+    <div class="card-header">
+      <span class="symbol-badge">NASDAQ · TSLA</span>
+      <span id="trendBadge" class="trend-badge trend-neutral" style="display:none">— Neutral</span>
+    </div>
+    <div class="price-row">
+      <div id="price" class="sk" style="width:180px;height:50px;border-radius:8px;">&nbsp;</div>
+    </div>
+    <div id="change" class="neutral muted">Ingresa tu clave de Finnhub en Configuración.</div>
+    <div id="updated" class="muted">Sin datos aún</div>
+
+    <!-- Sparkline sesión -->
+    <div id="sparkWrap" style="display:none">
+      <div id="sparkTitle">Historial de la sesión</div>
+      <svg id="sparkSvg" viewBox="0 0 400 60" preserveAspectRatio="none"></svg>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="refresh">↺ Actualizar</button>
+      <button class="btn btn-secondary" id="notify">🔔 Alertas push</button>
+    </div>
+    <div id="refreshTimer" style="display:none"></div>
+  </section>
+
+  <!-- MÉTRICAS DEL DÍA -->
+  <section class="card">
+    <div class="card-header"><span class="card-title">Métricas del día</span></div>
+    <div class="metrics">
+      <div class="metric"><div class="label">Apertura</div><div class="value" id="mOpen">—</div></div>
+      <div class="metric"><div class="label">Cierre anterior</div><div class="value" id="mPrev">—</div></div>
+      <div class="metric"><div class="label">Máximo del día</div><div class="value up" id="mHigh">—</div></div>
+      <div class="metric"><div class="label">Mínimo del día</div><div class="value down" id="mLow">—</div></div>
+    </div>
+  </section>
+
+  <!-- GRÁFICO TRADINGVIEW -->
+  <section class="card">
+    <div class="card-header"><span class="card-title">Gráfico — 1D</span></div>
+    <div id="chart"></div>
+  </section>
+
+  <!-- ALERTAS DE PRECIO -->
+  <section class="card">
+    <div class="card-header"><span class="card-title">Alertas de precio</span></div>
+    <div class="grid2">
+      <div>
+        <label for="above">Avisar si supera USD</label>
+        <input id="above" type="number" inputmode="decimal" placeholder="Ej: 400">
+      </div>
+      <div>
+        <label for="below">Avisar si baja de USD</label>
+        <input id="below" type="number" inputmode="decimal" placeholder="Ej: 300">
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="save">Guardar alertas</button>
+      <button class="btn btn-secondary" id="clearAlerts">Limpiar</button>
+    </div>
+    <p id="alertState" class="muted">Las alertas se activan mientras la app está abierta.</p>
+  </section>
+
+  <!-- CONFIGURACIÓN -->
+  <section class="card">
+    <div class="card-header"><span class="card-title">Configuración</span></div>
+
+    <div class="settings-row">
+      <div>
+        <div class="settings-label">Clave Finnhub</div>
+        <div class="settings-sub">Crea una cuenta gratis en finnhub.io</div>
+      </div>
+      <div class="key-wrap">
+        <input type="password" id="apiKeyInput" placeholder="pk_live_...">
+        <button class="key-eye" id="toggleKey" title="Mostrar/ocultar clave">👁</button>
+      </div>
+    </div>
+
+    <div class="settings-row">
+      <div>
+        <div class="settings-label">Intervalo de actualización</div>
+        <div class="settings-sub">Frecuencia de consulta de precio</div>
+      </div>
+      <select id="intervalSelect" style="max-width:110px">
+        <option value="15000">15 seg</option>
+        <option value="30000" selected>30 seg</option>
+        <option value="60000">1 min</option>
+        <option value="300000">5 min</option>
+      </select>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="saveSettings">Guardar configuración</button>
+      <button class="btn btn-secondary" id="clearKey">Borrar clave</button>
+    </div>
+  </section>
+
+  <!-- AVISO LEGAL -->
+  <section class="notice">
+    ⚠️ La cotización se consulta según el intervalo configurado mientras la app está abierta. Los precios pueden tener retraso según el plan de Finnhub. Esta herramienta es informativa y <strong>no constituye asesoría financiera</strong>.
+  </section>
+
+</main>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ─── CONFIG ──────────────────────────────────────────────────────────────────
+const STORAGE = {
+  KEY:      'tsla_api_key',
+  ABOVE:    'tsla_alert_above',
+  BELOW:    'tsla_alert_below',
+  INTERVAL: 'tsla_interval',
+  THEME:    'tsla_theme',
+  ALERTED:  'tsla_alerted_at',
+};
+const ALERT_COOLDOWN = 5 * 60 * 1000; // 5 min
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let lastPrice    = null;
+let priceHistory = [];          // sparkline history
+let intervalId   = null;
+let countdownId  = null;
+let nextRefresh  = null;
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const num = v => { const n = Number(v); return Number.isFinite(n) && v !== '' ? n : null; };
+const money = v => v != null && Number.isFinite(v)
+  ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v)
+  : '—';
+const pctFmt = v => v != null ? `${v >= 0 ? '+' : ''}${v.toFixed(2)}%` : '—';
+
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const t = $('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ─── THEME ───────────────────────────────────────────────────────────────────
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  $('themeToggle').textContent = theme === 'dark' ? '🌙' : '☀️';
+  $('themeColor').content = theme === 'dark' ? '#0a0a0f' : '#f0f0f5';
+  localStorage.setItem(STORAGE.THEME, theme);
+}
+$('themeToggle').addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme');
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+});
+
+// ─── API KEY ─────────────────────────────────────────────────────────────────
+function getKey() { return localStorage.getItem(STORAGE.KEY) || ''; }
+function setKey(k) { localStorage.setItem(STORAGE.KEY, k.trim()); }
+
+$('toggleKey').addEventListener('click', () => {
+  const inp = $('apiKeyInput');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+});
+
+// ─── SETTINGS ────────────────────────────────────────────────────────────────
+function saveSettings() {
+  const key = $('apiKeyInput').value.trim();
+  const interval = parseInt($('intervalSelect').value);
+  if (key) setKey(key);
+  localStorage.setItem(STORAGE.INTERVAL, interval);
+  scheduleRefresh(interval);
+  showToast('✅ Configuración guardada');
+  if (key) refreshQuote();
+}
+function clearKey() {
+  localStorage.removeItem(STORAGE.KEY);
+  $('apiKeyInput').value = '';
+  showToast('🗑 Clave eliminada');
+  $('status').textContent = 'Sin clave'; $('status').className = 'pill';
+}
+
+// ─── CHART ───────────────────────────────────────────────────────────────────
+function renderChart() {
+  const c = $('chart'); c.replaceChildren();
+  const w = document.createElement('div'); w.className = 'tradingview-widget-container';
+  const t = document.createElement('div'); t.className = 'tradingview-widget-container__widget';
+  const s = document.createElement('script');
+  s.src = 'https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js';
+  s.async = true;
+  s.textContent = JSON.stringify({
+    symbol: 'NASDAQ:TSLA', width: '100%', height: 230,
+    locale: 'es', dateRange: '1D', colorTheme:
+      document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light',
+    isTransparent: true, largeChartUrl: ''
+  });
+  w.append(t, s); c.append(w);
+}
+
+// ─── SPARKLINE ───────────────────────────────────────────────────────────────
+function renderSpark() {
+  if (priceHistory.length < 2) return;
+  const wrap = $('sparkWrap');
+  wrap.style.display = 'block';
+  const svg = $('sparkSvg');
+  const W = 400, H = 60, pad = 4;
+  const min = Math.min(...priceHistory);
+  const max = Math.max(...priceHistory);
+  const range = max - min || 1;
+  const pts = priceHistory.map((p, i) => {
+    const x = pad + (i / (priceHistory.length - 1)) * (W - pad * 2);
+    const y = H - pad - ((p - min) / range) * (H - pad * 2);
+    return `${x},${y}`;
+  }).join(' ');
+  const last = priceHistory.at(-1);
+  const first = priceHistory[0];
+  const color = last >= first ? '#22c55e' : '#e31937';
+  svg.innerHTML = `
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${400 - pad}" cy="${H - pad - ((last - min) / range) * (H - pad * 2)}" r="3.5" fill="${color}"/>
+  `;
+}
+
+// ─── METRICS ─────────────────────────────────────────────────────────────────
+function renderMetrics(d) {
+  $('mOpen').textContent = money(d.o);
+  $('mPrev').textContent = money(d.pc);
+  $('mHigh').textContent = money(d.h);
+  $('mLow').textContent  = money(d.l);
+}
+
+// ─── TREND ───────────────────────────────────────────────────────────────────
+function renderTrend(pct) {
+  const badge = $('trendBadge');
+  badge.style.display = 'inline-flex';
+  if (pct > 0.5) {
+    badge.textContent = '▲ Alcista'; badge.className = 'trend-badge trend-up';
+  } else if (pct < -0.5) {
+    badge.textContent = '▼ Bajista'; badge.className = 'trend-badge trend-down';
+  } else {
+    badge.textContent = '◆ Lateral'; badge.className = 'trend-badge trend-neutral';
+  }
+}
+
+// ─── ALERTS ──────────────────────────────────────────────────────────────────
+function checkAlerts(price) {
+  if (Notification.permission !== 'granted') return;
+  const above = num(localStorage.getItem(STORAGE.ABOVE));
+  const below = num(localStorage.getItem(STORAGE.BELOW));
+  const lastAlerted = Number(localStorage.getItem(STORAGE.ALERTED) || 0);
+  if (Date.now() - lastAlerted < ALERT_COOLDOWN) return;
+  let msg = null;
+  if (above && price >= above) msg = `📈 TSLA alcanzó ${money(price)} (umbral: ${money(above)})`;
+  else if (below && price <= below) msg = `📉 TSLA cayó a ${money(price)} (umbral: ${money(below)})`;
+  if (msg) {
+    new Notification('TSLA Analista', { body: msg, icon: 'icon.svg' });
+    localStorage.setItem(STORAGE.ALERTED, Date.now());
+  }
+}
+function saveAlerts() {
+  localStorage.setItem(STORAGE.ABOVE, $('above').value);
+  localStorage.setItem(STORAGE.BELOW, $('below').value);
+  showToast('🔔 Alertas guardadas');
+  $('alertState').textContent = `Alerta superior: ${money(num($('above').value))} · Inferior: ${money(num($('below').value))}`;
+}
+function clearAlerts() {
+  $('above').value = ''; $('below').value = '';
+  localStorage.removeItem(STORAGE.ABOVE); localStorage.removeItem(STORAGE.BELOW);
+  $('alertState').textContent = 'Alertas eliminadas.';
+  showToast('🗑 Alertas eliminadas');
+}
+
+// ─── COUNTDOWN ───────────────────────────────────────────────────────────────
+function startCountdown(ms) {
+  const timerEl = $('refreshTimer');
+  timerEl.style.display = 'block';
+  nextRefresh = Date.now() + ms;
+  clearInterval(countdownId);
+  countdownId = setInterval(() => {
+    const rem = Math.max(0, Math.round((nextRefresh - Date.now()) / 1000));
+    timerEl.textContent = `Próxima actualización en ${rem}s`;
+    if (rem === 0) clearInterval(countdownId);
+  }, 1000);
+}
+
+// ─── REFRESH LOOP ─────────────────────────────────────────────────────────────
+function scheduleRefresh(ms) {
+  clearInterval(intervalId);
+  intervalId = setInterval(() => { refreshQuote(); startCountdown(ms); }, ms);
+  startCountdown(ms);
+}
+
+// ─── QUOTE ───────────────────────────────────────────────────────────────────
+async function refreshQuote() {
+  const key = getKey();
+  if (!key || key.includes('REEMPLAZA')) {
+    $('status').textContent = 'Sin clave'; $('status').className = 'pill'; return;
+  }
+  $('status').textContent = 'Actualizando…'; $('status').className = 'pill';
+  try {
+    const url = `https://finnhub.io/api/v1/quote?symbol=TSLA&token=${encodeURIComponent(key)}`;
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`Error HTTP ${res.status}`);
+    const d = await res.json();
+    if (!d.c) throw new Error('Cotización no disponible');
+
+    // Price flash animation
+    const priceEl = $('price');
+    if (lastPrice !== null) {
+      priceEl.classList.remove('flash-up', 'flash-down');
+      void priceEl.offsetWidth; // reflow
+      priceEl.classList.add(d.c > lastPrice ? 'flash-up' : 'flash-down');
+    }
+    lastPrice = d.c;
+    priceHistory.push(d.c);
+    if (priceHistory.length > 60) priceHistory.shift();
+
+    // Render
+    priceEl.className = 'price'; // reset skeleton
+    priceEl.style = ''; // clear skeleton styles
+    priceEl.textContent = money(d.c);
+    const chg = d.d || 0; const pct = d.dp || 0;
+    $('change').textContent = `${chg >= 0 ? '+' : ''}${money(chg)} (${pctFmt(pct)})`;
+    $('change').className = `change ${chg >= 0 ? 'up' : 'down'}`;
+    $('updated').textContent = `Actualizado: ${new Date().toLocaleTimeString('es-CO')}`;
+    $('status').textContent = 'En vivo'; $('status').className = 'pill live';
+
+    renderMetrics(d);
+    renderTrend(pct);
+    renderSpark();
+    checkAlerts(d.c);
+  } catch (err) {
+    $('status').textContent = 'Error'; $('status').className = 'pill error';
+    $('updated').textContent = `⚠ ${err.message}`;
+  }
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+(function init() {
+  // Theme
+  applyTheme(localStorage.getItem(STORAGE.THEME) || 'dark');
+
+  // Restore settings
+  const savedKey = getKey();
+  if (savedKey) $('apiKeyInput').value = savedKey;
+  const savedInterval = parseInt(localStorage.getItem(STORAGE.INTERVAL) || '30000');
+  $('intervalSelect').value = savedInterval;
+
+  // Restore alerts
+  $('above').value = localStorage.getItem(STORAGE.ABOVE) || '';
+  $('below').value = localStorage.getItem(STORAGE.BELOW) || '';
+
+  // Events
+  $('refresh').addEventListener('click', () => { refreshQuote(); startCountdown(parseInt($('intervalSelect').value)); });
+  $('save').addEventListener('click', saveAlerts);
+  $('clearAlerts').addEventListener('click', clearAlerts);
+  $('saveSettings').addEventListener('click', saveSettings);
+  $('clearKey').addEventListener('click', clearKey);
+  $('notify').addEventListener('click', async () => {
+    if (!('Notification' in window)) { showToast('Tu navegador no soporta notificaciones'); return; }
+    const p = await Notification.requestPermission();
+    $('notify').textContent = p === 'granted' ? '✅ Alertas activas' : '🚫 Permiso denegado';
+    showToast(p === 'granted' ? '🔔 Notificaciones activadas' : 'No se pudo obtener permiso');
+  });
+
+  // Service Worker
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js');
+
+  // Chart
+  renderChart();
+
+  // Auto-start if key exists
+  if (savedKey && !savedKey.includes('REEMPLAZA')) {
+    refreshQuote();
+    scheduleRefresh(savedInterval);
+  }
+})();
+</script>
+</body>
+</html>
