@@ -1,79 +1,59 @@
-# TSLA Analista — Analista de Acciones de Tesla
+# TSLA & NU Analista — Analista de Acciones y Radar ATH/ATL
 
-> **PWA instalable** para vigilar el precio de Tesla (TSLA) en tiempo real desde cualquier dispositivo.
+> **PWA instalable** para vigilar acciones de **Tesla (TSLA)**, **Nubank (NU)** y escanear el mercado en busca de acciones en **máximos históricos (52-Week High / ATH)** y **mínimos históricos (52-Week Low / ATL)** en tiempo real.
 
-![Vista previa](https://img.shields.io/badge/TSLA-Analista-e31937?style=for-the-badge&logo=tesla&logoColor=white)
-![GitHub Pages](https://img.shields.io/badge/Deploy-GitHub%20Pages-0a0a0f?style=for-the-badge&logo=github)
+![TSLA & NU](https://img.shields.io/badge/TSLA%20%26%20NU-Analista-820ad1?style=for-the-badge&logo=tesla&logoColor=white)
+![GitHub Pages](https://img.shields.io/badge/Deploy-GitHub%20Pages-08080d?style=for-the-badge&logo=github)
 
 ---
 
-## ✨ Características
+## ✨ Nuevas Características
 
 | Función | Detalle |
 |---|---|
-| 📈 **Precio en tiempo real** | Consulta Finnhub cada 15s/30s/1min/5min |
-| 📊 **Métricas del día** | Apertura, cierre anterior, máximo y mínimo |
-| 📉 **Sparkline de sesión** | Historial visual de precios de la sesión actual |
-| 🔺 **Indicador de tendencia** | Alcista / Bajista / Lateral según variación % |
-| 🔔 **Alertas push** | Notificaciones cuando el precio cruza tus umbrales |
-| ⚙️ **API key in-app** | Configura tu clave Finnhub sin tocar el código |
-| 🌙 **Modo oscuro/claro** | Toggle de tema persistente |
-| 📱 **Instalable** | PWA con soporte offline (service worker) |
+| 🟣 **Nubank (NU)** | Soporte nativo para Nu Holdings Ltd (NYSE: NU) con cotización, métricas y gráfico dedicado |
+| 🔴 **Tesla (TSLA)** | Análisis completo de Tesla Inc. (NASDAQ: TSLA) en tiempo real |
+| 🎯 **Radar de Máximos y Mínimos** | Detección de acciones cerca del récord histórico (ATH / 52W High) o en mínimos anuales (ATL / 52W Low) |
+| 📊 **Barra de Rango 52 Semanas** | Visualizador de posición de precio dentro de su rango anual + cálculo de distancia al récord en % |
+| 🔍 **Buscador Universal de Tickers** | Busca cualquier acción de EE.UU. (NVDA, AAPL, MELI, PLTR, AMZN, META, etc.) |
+| 📈 **Escáner Técnico TradingView** | Explorador de mercado interactivo con filtros de volumen, nuevos máximos y mínimos |
+| 🔔 **Alertas Push por Acción** | Configura umbrales de precio independientes para cada acción que sigas |
+| ⚡ **Sparkline de Sesión** | Historial intradía dinámico generado en SVG puro |
+| 🌙 **Tema Oscuro / Claro** | Interfaz personalizable con persistencia en tu dispositivo |
 
 ---
 
-## 🚀 Instalación y uso
+## 🚀 Acceso y Uso
 
-### 1. Obtener clave de Finnhub
+### 🌐 Abrir en la Web
+Puedes abrir la aplicación directamente en cualquier navegador:
+👉 **[https://jhondaniel84.github.io/ANALISTA-DE-ACCIONES-DE-TESLA/](https://jhondaniel84.github.io/ANALISTA-DE-ACCIONES-DE-TESLA/)**
 
-1. Crea cuenta gratuita en [finnhub.io](https://finnhub.io)
-2. Copia tu API key desde el dashboard
-
-### 2. Publicar la app
-
-**Opción A — GitHub Pages (recomendado, gratis)**
-
-Este repositorio incluye un workflow de GitHub Actions que publica automáticamente en GitHub Pages:
-
-1. Ve a **Settings → Pages** en tu repo
-2. En **Source**, selecciona `GitHub Actions`
-3. El workflow `.github/workflows/deploy.yml` se ejecuta en cada push a `main`
-4. Tu app estará disponible en `https://JHONDANIEL84.github.io/ANALISTA-DE-ACCIONES-DE-TESLA/`
-
-**Opción B — Netlify Drop**
-
-1. Abre [app.netlify.com/drop](https://app.netlify.com/drop)
-2. Arrastra esta carpeta
-3. Obtienes una URL pública al instante
-
-### 3. Ingresar la clave en la app
-
-Una vez publicada, abre la app, ve a **Configuración** e ingresa tu API key de Finnhub. Se guarda localmente en el dispositivo.
-
-### 4. Instalar en el móvil
-
-- **Android (Chrome)**: Toca los tres puntos → *Añadir a pantalla de inicio*
-- **iOS (Safari)**: Toca compartir → *Agregar a la pantalla de inicio*
+### 📱 Instalar en tu Celular (PWA)
+1. Abre el enlace en **Chrome** (Android) o **Safari** (iPhone).
+2. Toca el menú de opciones (tres puntos en Android o botón Compartir en iPhone).
+3. Selecciona **"Añadir a la pantalla de inicio"** / **"Instalar aplicación"**.
 
 ---
 
-## 📋 Alertas de precio
+## 🔑 Configurar tu Clave de Finnhub (Gratis)
 
-Las alertas se revisan en cada actualización mientras la app está abierta. Por defecto tienen un **cooldown de 5 minutos** para evitar spam de notificaciones.
-
-> **Nota**: Las alertas no funcionan si el teléfono cierra la app. Para alertas 24/7 se necesita un backend.
+1. Crea tu cuenta gratuita en [finnhub.io](https://finnhub.io).
+2. Copia tu API key del Dashboard.
+3. En la app, baja hasta la sección **Configuración**, pega tu clave y presiona **"Guardar configuración"**.
 
 ---
 
 ## 🛠 Tecnologías
 
-- HTML5 + CSS3 + JavaScript vanilla (sin frameworks)
-- [Finnhub API](https://finnhub.io) — cotizaciones de bolsa
-- [TradingView Widget](https://www.tradingview.com) — gráfico interactivo
-- PWA: Service Worker + Web App Manifest
+- **HTML5 + CSS3 moderno** (Glassmorphism, CSS Grid, CSS Variables)
+- **JavaScript Vanilla ES6+** (sin dependencias pesadas, carga ultrarrápida)
+- **Finnhub API** (cotizaciones y métricas de 52 semanas)
+- **TradingView Widgets** (gráficos avanzados y screener técnico en tiempo real)
+- **Service Worker v3** (soporte offline y caching inteligente)
 
 ---
 
-## ⚠️ Aviso legal
+## ⚠️ Aviso Legal
 
-Esta aplicación es **exclusivamente informativa**. Los precios pueden tener retraso según el plan de Finnhub. No constituye asesoría financiera, de inversión ni recomendación de compra/venta.
+Esta aplicación es para fines **estrictamente informativos y analíticos**. No constituye asesoría financiera ni recomendación de inversión.

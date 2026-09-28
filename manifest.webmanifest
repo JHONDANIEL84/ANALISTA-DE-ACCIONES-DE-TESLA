@@ -1,21 +1,28 @@
 {
-  "name": "TSLA Analista — Acciones de Tesla",
-  "short_name": "TSLA",
-  "description": "Analista de acciones de Tesla en tiempo real con alertas de precio",
+  "name": "Analista de Acciones — Tesla, Nubank & Radar ATH/ATL",
+  "short_name": "Acciones",
+  "description": "Analista de acciones de Tesla, Nubank y radar de máximos y mínimos históricos en tiempo real",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#0a0a0f",
-  "theme_color": "#e31937",
+  "background_color": "#08080d",
+  "theme_color": "#820ad1",
   "orientation": "portrait-primary",
   "icons": [
     { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ],
   "shortcuts": [
     {
-      "name": "Ver cotización",
-      "short_name": "Precio",
-      "description": "Ver el precio actual de TSLA",
-      "url": "./",
+      "name": "Nubank (NU)",
+      "short_name": "Nubank",
+      "description": "Ver cotización de Nubank",
+      "url": "./#NU",
+      "icons": [{ "src": "icon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Tesla (TSLA)",
+      "short_name": "Tesla",
+      "description": "Ver cotización de Tesla",
+      "url": "./#TSLA",
       "icons": [{ "src": "icon.svg", "sizes": "any" }]
     }
   ],

@@ -1,15 +1,32 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <!-- Background -->
-  <rect width="128" height="128" rx="26" fill="#0a0a0f"/>
-  <!-- Red glow -->
-  <radialGradient id="glow" cx="50%" cy="40%" r="55%">
-    <stop offset="0%" stop-color="#e31937" stop-opacity="0.35"/>
-    <stop offset="100%" stop-color="#e31937" stop-opacity="0"/>
-  </radialGradient>
-  <rect width="128" height="128" rx="26" fill="url(#glow)"/>
-  <!-- Tesla T logo -->
-  <path d="M20 34 C20 34 38 28 64 28 C90 28 108 34 108 34 C108 34 104 44 64 44 C24 44 20 34 20 34Z" fill="#e31937"/>
-  <path d="M52 44 L64 100 L76 44Z" fill="white"/>
-  <!-- Dot accent -->
-  <circle cx="64" cy="112" r="5" fill="#e31937" opacity="0.7"/>
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#820ad1" stop-opacity="0.45"/>
+      <stop offset="60%" stop-color="#e31937" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#08080d" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="chartGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#820ad1"/>
+      <stop offset="50%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="128" height="128" rx="28" fill="#08080d"/>
+  <rect width="128" height="128" rx="28" fill="url(#bgGlow)"/>
+
+  <!-- Candlestick / Bars -->
+  <rect x="22" y="58" width="6" height="34" rx="3" fill="#e31937" opacity="0.8"/>
+  <rect x="42" y="44" width="6" height="48" rx="3" fill="#820ad1" opacity="0.9"/>
+  <rect x="62" y="32" width="6" height="60" rx="3" fill="#06b6d4" opacity="0.9"/>
+  <rect x="82" y="24" width="6" height="68" rx="3" fill="#22c55e"/>
+  <rect x="102" y="16" width="6" height="76" rx="3" fill="#fbbf24"/>
+
+  <!-- Trend Line -->
+  <path d="M 18 84 Q 45 68 62 48 T 106 20" fill="none" stroke="url(#chartGrad)" stroke-width="4.5" stroke-linecap="round"/>
+
+  <!-- Peak Star / ATH Indicator -->
+  <circle cx="106" cy="20" r="5" fill="#fbbf24"/>
+  <circle cx="106" cy="20" r="9" fill="none" stroke="#fbbf24" stroke-width="1.5" opacity="0.6"/>
 </svg>
