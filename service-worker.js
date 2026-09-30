@@ -1,4 +1,4 @@
-const CACHE = 'stock-analista-v3';
+const CACHE = 'stock-analista-v4';
 const NETWORK_FIRST = ['/', '/index.html'];
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
 

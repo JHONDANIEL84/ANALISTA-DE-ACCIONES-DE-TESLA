@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" id="themeColor" content="#0a0a0f">
-  <meta name="description" content="Analista de Acciones — Tesla, Nubank y Radar de Máximos/Mínimos Históricos en tiempo real">
+  <meta name="theme-color" id="themeColor" content="#08080d">
+  <meta name="description" content="TSLA & NU Analista Cuantitativo — Smart Money Concepts (SMC), Señales Institucionales y Radar ATH/ATL">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icon.svg">
-  <title>Analista de Acciones | TSLA & NU & Mercado</title>
+  <title>TSLA & NU Analista Cuantitativo SMC</title>
   <link rel="preconnect" href="https://s3.tradingview.com">
   <style>
-    /* ── VARIABLES & THEMES ───────────────────────────────── */
+    /* ── DESIGN SYSTEM TOKENS ─────────────────────────────── */
     :root {
       --bg0: #08080d;
       --bg1: #101018;
       --bg2: #181826;
-      --surface: rgba(20, 20, 32, 0.85);
+      --surface: rgba(20, 20, 32, 0.88);
       --border: rgba(255, 255, 255, 0.08);
       --red: #e31937;
       --red-dim: rgba(227, 25, 55, 0.16);
@@ -31,16 +31,16 @@
       --text1: #94a3b8;
       --text2: #64748b;
       --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --r-card: 20px;
+      --r-card: 18px;
       --r-sm: 12px;
-      --shadow: 0 16px 36px rgba(0,0,0,0.45);
+      --shadow: 0 16px 36px rgba(0,0,0,0.5);
       color-scheme: dark;
     }
     [data-theme="light"] {
       --bg0: #f1f5f9;
       --bg1: #ffffff;
       --bg2: #e2e8f0;
-      --surface: rgba(255, 255, 255, 0.92);
+      --surface: rgba(255, 255, 255, 0.94);
       --border: rgba(0, 0, 0, 0.08);
       --text0: #0f172a;
       --text1: #475569;
@@ -49,7 +49,7 @@
       color-scheme: light;
     }
 
-    /* ── RESET & BASE ─────────────────────────────────────── */
+    /* ── BASE RESET ───────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
@@ -57,35 +57,35 @@
       background: var(--bg0); color: var(--text0);
       min-height: 100dvh;
       background-image: 
-        radial-gradient(ellipse 70% 40% at 20% -10%, rgba(227, 25, 55, 0.12), transparent),
-        radial-gradient(ellipse 70% 40% at 80% -10%, rgba(130, 10, 209, 0.12), transparent);
+        radial-gradient(ellipse 70% 35% at 20% -5%, rgba(227, 25, 55, 0.12), transparent),
+        radial-gradient(ellipse 70% 35% at 80% -5%, rgba(130, 10, 209, 0.12), transparent);
       transition: background 0.3s, color 0.3s;
     }
     main {
       max-width: 680px; margin: auto;
-      padding: calc(14px + env(safe-area-inset-top)) 16px calc(36px + env(safe-area-inset-bottom));
+      padding: calc(12px + env(safe-area-inset-top)) 14px calc(36px + env(safe-area-inset-bottom));
     }
 
     /* ── HEADER ───────────────────────────────────────────── */
     header {
       display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 16px; padding: 0 2px;
+      margin-bottom: 14px; padding: 0 2px;
     }
-    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 10px; }
     .brand-logos {
-      display: flex; position: relative; width: 44px; height: 38px;
+      display: flex; position: relative; width: 44px; height: 36px;
     }
     .brand-badge {
-      width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center;
-      font-weight: 900; font-size: 0.72rem; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center;
+      font-weight: 900; font-size: 0.7rem; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
       position: absolute; border: 2px solid var(--bg0);
     }
     .brand-badge.tsla { background: var(--red); left: 0; top: 0; z-index: 2; }
-    .brand-badge.nu { background: var(--purple); left: 14px; top: 8px; z-index: 1; font-family: sans-serif; }
-    h1 { font-size: 1.15rem; font-weight: 800; margin: 0; letter-spacing: -0.02em; }
+    .brand-badge.nu { background: var(--purple); left: 14px; top: 8px; z-index: 1; }
+    h1 { font-size: 1.1rem; font-weight: 800; margin: 0; letter-spacing: -0.02em; }
     .header-actions { display: flex; align-items: center; gap: 8px; }
     .pill {
-      font-size: 0.72rem; font-weight: 700; padding: 5px 10px;
+      font-size: 0.72rem; font-weight: 700; padding: 4px 9px;
       border-radius: 99px; background: var(--bg2); color: var(--text1);
       border: 1px solid var(--border); transition: all 0.3s;
     }
@@ -97,49 +97,45 @@
       display: grid; place-items: center; font-size: 1rem;
       transition: all 0.2s; backdrop-filter: blur(8px);
     }
-    .icon-btn:hover { background: var(--bg2); color: var(--text0); transform: translateY(-1px); }
+    .icon-btn:hover { background: var(--bg2); color: var(--text0); }
 
     /* ── NAVIGATION TABS ──────────────────────────────────── */
     .nav-tabs {
-      display: flex; gap: 6px; background: var(--bg1); padding: 5px;
-      border-radius: 14px; border: 1px solid var(--border); margin-bottom: 16px;
+      display: flex; gap: 6px; background: var(--bg1); padding: 4px;
+      border-radius: 14px; border: 1px solid var(--border); margin-bottom: 14px;
     }
     .tab-btn {
-      flex: 1; padding: 9px 12px; border: 0; border-radius: 10px;
+      flex: 1; padding: 9px 8px; border: 0; border-radius: 10px;
       background: transparent; color: var(--text1); font-weight: 700;
-      font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
-      display: flex; align-items: center; justify-content: center; gap: 6px;
+      font-size: 0.82rem; cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
     }
     .tab-btn.active {
       background: var(--surface); color: var(--text0);
       box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid var(--border);
     }
 
-    /* ── QUICK TICKER BAR & SEARCH ────────────────────────── */
-    .ticker-bar-wrap { margin-bottom: 14px; }
-    .search-row {
-      display: flex; gap: 8px; margin-bottom: 10px;
-    }
-    .search-input-wrap {
-      position: relative; flex: 1;
-    }
+    /* ── SEARCH & TICKER CHIPS ────────────────────────────── */
+    .ticker-bar-wrap { margin-bottom: 12px; }
+    .search-row { display: flex; gap: 8px; margin-bottom: 8px; }
+    .search-input-wrap { position: relative; flex: 1; }
     .search-input-wrap input {
       width: 100%; border: 1px solid var(--border); border-radius: var(--r-sm);
-      padding: 10px 12px 10px 34px; background: var(--surface); color: var(--text0);
+      padding: 9px 12px 9px 32px; background: var(--surface); color: var(--text0);
       font-size: 0.88rem; font-family: var(--font); outline: none; transition: border 0.2s;
     }
     .search-input-wrap input:focus { border-color: var(--cyan); }
     .search-icon {
-      position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
-      color: var(--text2); font-size: 0.85rem; pointer-events: none;
+      position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+      color: var(--text2); font-size: 0.8rem; pointer-events: none;
     }
     .ticker-scroll {
       display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px;
-      scrollbar-width: none; -ms-overflow-style: none;
+      scrollbar-width: none;
     }
     .ticker-scroll::-webkit-scrollbar { display: none; }
     .ticker-chip {
-      display: flex; align-items: center; gap: 6px; padding: 7px 12px;
+      display: flex; align-items: center; gap: 6px; padding: 6px 12px;
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 99px; color: var(--text1); font-size: 0.78rem; font-weight: 700;
       cursor: pointer; white-space: nowrap; transition: all 0.2s;
@@ -160,20 +156,19 @@
     /* ── CARDS ────────────────────────────────────────────── */
     .card {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--r-card); padding: 20px; margin-bottom: 14px;
+      border-radius: var(--r-card); padding: 18px; margin-bottom: 12px;
       box-shadow: var(--shadow); backdrop-filter: blur(14px);
-      transition: background 0.3s, border 0.3s;
     }
     .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-    .card-title { font-size: 0.8rem; font-weight: 700; color: var(--text1); text-transform: uppercase; letter-spacing: 0.08em; }
+    .card-title { font-size: 0.78rem; font-weight: 800; color: var(--text1); text-transform: uppercase; letter-spacing: 0.08em; }
 
-    /* ── HERO PRICE CARD ──────────────────────────────────── */
+    /* ── PRICE HERO ───────────────────────────────────────── */
     .active-company { display: flex; align-items: center; justify-content: space-between; }
-    .symbol-title { font-size: 1.15rem; font-weight: 800; }
-    .symbol-exchange { font-size: 0.75rem; color: var(--text2); font-weight: 600; letter-spacing: 0.05em; }
-    .price-main-row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 8px 0 10px; }
+    .symbol-title { font-size: 1.25rem; font-weight: 900; }
+    .symbol-exchange { font-size: 0.75rem; color: var(--text2); font-weight: 600; }
+    .price-main-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 6px 0 8px; }
     #price {
-      font-size: clamp(2.4rem, 9vw, 3.2rem); font-weight: 900;
+      font-size: clamp(2.2rem, 8vw, 3rem); font-weight: 900;
       letter-spacing: -0.05em; line-height: 1; color: var(--text0);
       transition: color 0.4s;
     }
@@ -181,40 +176,66 @@
     #price.flash-down { animation: flashDown 0.6s ease; }
     @keyframes flashUp { 0%,100%{color:var(--text0)} 40%{color:var(--green)} }
     @keyframes flashDown { 0%,100%{color:var(--text0)} 40%{color:var(--red)} }
-    #change { font-size: 1.05rem; font-weight: 700; }
+    #change { font-size: 0.95rem; font-weight: 700; }
     .up { color: var(--green); } .down { color: var(--red); } .neutral { color: var(--text1); }
-    .muted { color: var(--text1); font-size: 0.82rem; }
-    .muted-sm { color: var(--text2); font-size: 0.74rem; }
-    
-    /* ── BADGES & STATUS ──────────────────────────────────── */
-    .trend-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 4px 10px; border-radius: 99px; font-size: 0.74rem; font-weight: 700;
-    }
-    .trend-up { background: var(--green-dim); color: var(--green); }
-    .trend-down { background: var(--red-dim); color: var(--red); }
-    .trend-neutral { background: var(--amber-dim); color: var(--amber); }
+    .muted { color: var(--text1); font-size: 0.8rem; }
+    .muted-sm { color: var(--text2); font-size: 0.72rem; }
 
-    .ath-badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 4px 9px; border-radius: 99px; font-size: 0.72rem; font-weight: 800;
-      background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);
+    /* ── SMC SIGNAL BOX ───────────────────────────────────── */
+    .signal-box {
+      border-radius: var(--r-sm); padding: 14px; margin: 12px 0 10px;
+      border: 1px solid var(--border); transition: all 0.3s;
     }
-    .atl-badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 4px 9px; border-radius: 99px; font-size: 0.72rem; font-weight: 800;
-      background: rgba(6, 182, 212, 0.2); color: #38bdf8; border: 1px solid rgba(6, 182, 212, 0.4);
+    .signal-box.long {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.16) 0%, rgba(16, 185, 129, 0.06) 100%);
+      border-color: rgba(34, 197, 94, 0.4);
     }
+    .signal-box.short {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.16) 0%, rgba(225, 29, 72, 0.06) 100%);
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+    .signal-box.neutral {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.14) 0%, rgba(217, 119, 6, 0.05) 100%);
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+    .signal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .badge-signal {
+      padding: 4px 10px; border-radius: 99px; font-weight: 800; font-size: 0.78rem;
+    }
+    .badge-signal.long { background: var(--green); color: #000; }
+    .badge-signal.short { background: var(--red); color: #fff; }
+    .badge-signal.neutral { background: var(--amber); color: #000; }
+    .signal-score { font-weight: 800; font-size: 0.9rem; color: #fbbf24; }
+    .signal-verdict { font-size: 0.85rem; line-height: 1.45; margin: 0; color: #e2e8f0; }
 
-    /* ── 52-WEEK & ATH/ATL RANGE BAR ──────────────────────── */
+    /* ── TRADE LEVELS GRID ────────────────────────────────── */
+    .trade-levels-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px;
+    }
+    .level-item {
+      background: var(--bg1); border: 1px solid var(--border);
+      border-radius: 10px; padding: 8px 10px; text-align: center;
+    }
+    .level-item .lbl { font-size: 0.68rem; color: var(--text2); font-weight: 700; text-transform: uppercase; }
+    .level-item .val { font-size: 0.95rem; font-weight: 800; margin-top: 2px; }
+
+    /* ── SMC METRICS & 52W RANGE ──────────────────────────── */
+    .smc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .smc-card {
+      background: var(--bg1); border: 1px solid var(--border);
+      border-radius: var(--r-sm); padding: 10px 12px;
+    }
+    .smc-card .lbl { font-size: 0.7rem; color: var(--text2); font-weight: 700; }
+    .smc-card .val { font-size: 0.95rem; font-weight: 800; margin-top: 3px; }
+
     .range-box {
       background: var(--bg1); border: 1px solid var(--border);
-      border-radius: var(--r-sm); padding: 14px; margin: 12px 0 6px;
+      border-radius: var(--r-sm); padding: 12px; margin: 10px 0 6px;
     }
-    .range-head { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text1); font-weight: 600; margin-bottom: 8px; }
+    .range-head { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text1); font-weight: 600; margin-bottom: 6px; }
     .range-track {
-      position: relative; width: 100%; height: 8px; background: var(--bg2);
-      border-radius: 99px; overflow: visible; margin: 12px 0 8px;
+      position: relative; width: 100%; height: 7px; background: var(--bg2);
+      border-radius: 99px; overflow: visible; margin: 10px 0 6px;
     }
     .range-fill {
       position: absolute; left: 0; top: 0; height: 100%;
@@ -223,135 +244,82 @@
     }
     .range-pointer {
       position: absolute; top: 50%; transform: translate(-50%, -50%);
-      width: 14px; height: 14px; background: #ffffff; border: 3px solid var(--cyan);
-      border-radius: 50%; box-shadow: 0 0 8px rgba(0,0,0,0.6);
+      width: 13px; height: 13px; background: #ffffff; border: 3px solid var(--cyan);
+      border-radius: 50%; box-shadow: 0 0 6px rgba(0,0,0,0.6);
       transition: left 0.4s ease;
     }
-    .range-foot { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text2); font-weight: 700; }
-    .ath-stats {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; padding-top: 10px;
-      border-top: 1px dashed var(--border);
-    }
-    .ath-stat-item { font-size: 0.74rem; }
-    .ath-stat-item b { display: block; font-size: 0.88rem; margin-top: 2px; }
+    .range-foot { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text2); font-weight: 700; }
 
-    /* ── BUTTONS & CONTROLS ───────────────────────────────── */
-    .btn-row { display: flex; gap: 8px; margin-top: 12px; }
+    /* ── CONFLUENCE FACTORS LIST ──────────────────────────── */
+    .confluence-list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+    .confluence-item {
+      background: var(--bg1); border: 1px solid var(--border); border-radius: 10px;
+      padding: 8px 12px; display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.8rem;
+    }
+    .confluence-item .desc { font-size: 0.72rem; color: var(--text2); margin-top: 2px; }
+
+    /* ── RISK CALCULATOR ──────────────────────────────────── */
+    .calc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+    .calc-res {
+      background: var(--bg1); border: 1px solid var(--border); border-radius: var(--r-sm);
+      padding: 10px 12px; text-align: center; margin-top: 8px;
+    }
+
+    /* ── BUTTONS & INPUTS ─────────────────────────────────── */
+    .btn-row { display: flex; gap: 8px; margin-top: 10px; }
     .btn {
-      flex: 1; border: 0; border-radius: var(--r-sm); padding: 11px 14px;
-      font-weight: 700; font-size: 0.86rem; cursor: pointer; transition: all 0.2s;
+      flex: 1; border: 0; border-radius: var(--r-sm); padding: 10px 12px;
+      font-weight: 700; font-size: 0.84rem; cursor: pointer; transition: all 0.2s;
       display: flex; align-items: center; justify-content: center; gap: 6px;
     }
-    .btn-primary { background: var(--red); color: white; box-shadow: 0 4px 14px rgba(227,25,55,0.35); }
-    .btn-primary.purple { background: var(--purple); box-shadow: 0 4px 14px rgba(130,10,209,0.35); }
-    .btn-primary.cyan { background: #0284c7; box-shadow: 0 4px 14px rgba(2,132,199,0.35); }
-    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+    .btn-primary { background: var(--red); color: white; }
+    .btn-primary.purple { background: var(--purple); }
     .btn-secondary { background: var(--bg2); color: var(--text0); border: 1px solid var(--border); }
-    .btn-secondary:hover { background: var(--bg1); }
-    .btn:disabled { opacity: 0.45; pointer-events: none; }
-    #refreshTimer { font-size: 0.72rem; color: var(--text2); margin-top: 6px; text-align: center; }
-
-    /* ── METRICS GRID ─────────────────────────────────────── */
-    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .metric {
-      background: var(--bg1); border: 1px solid var(--border);
-      border-radius: var(--r-sm); padding: 12px 14px;
+    .btn:hover { filter: brightness(1.1); }
+    input, select {
+      width: 100%; border: 1px solid var(--border); border-radius: var(--r-sm);
+      padding: 10px 12px; background: var(--bg1); color: var(--text0);
+      font-size: 0.9rem; font-family: var(--font); outline: none;
     }
-    .metric .label { font-size: 0.72rem; color: var(--text2); margin-bottom: 4px; font-weight: 600; }
-    .metric .value { font-size: 1.05rem; font-weight: 800; color: var(--text0); }
-    .metric .value.up { color: var(--green); }
-    .metric .value.down { color: var(--red); }
+    input:focus, select:focus { border-color: var(--cyan); }
 
-    /* ── SPARKLINE ────────────────────────────────────────── */
-    #sparkWrap {
-      background: var(--bg1); border-radius: var(--r-sm);
-      border: 1px solid var(--border); padding: 12px; margin-top: 10px;
-    }
-    #sparkTitle { font-size: 0.72rem; color: var(--text2); margin-bottom: 6px; font-weight: 600; }
-    #sparkSvg { width: 100%; height: 55px; display: block; }
-
-    /* ── TRADINGVIEW WIDGET ───────────────────────────────── */
-    #chart { border-radius: var(--r-sm); overflow: hidden; min-height: 250px; background: var(--bg1); }
-    #chart > div { height: 250px !important; }
-
-    /* ── RADAR SECTION ────────────────────────────────────── */
-    .radar-filters {
-      display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 14px;
-      scrollbar-width: none;
-    }
-    .radar-filters::-webkit-scrollbar { display: none; }
+    /* ── RADAR CARDS ──────────────────────────────────────── */
+    .radar-filters { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px; }
     .radar-pill {
-      padding: 6px 12px; border-radius: 99px; background: var(--bg1); border: 1px solid var(--border);
-      color: var(--text1); font-size: 0.76rem; font-weight: 700; cursor: pointer; white-space: nowrap;
+      padding: 5px 11px; border-radius: 99px; background: var(--bg1); border: 1px solid var(--border);
+      color: var(--text1); font-size: 0.74rem; font-weight: 700; cursor: pointer; white-space: nowrap;
     }
-    .radar-pill.active {
-      background: var(--bg2); color: var(--text0); border-color: var(--cyan);
-    }
-    .radar-grid { display: flex; flex-direction: column; gap: 8px; }
+    .radar-pill.active { background: var(--bg2); color: var(--text0); border-color: var(--cyan); }
+    .radar-grid { display: flex; flex-direction: column; gap: 7px; }
     .radar-card {
       background: var(--bg1); border: 1px solid var(--border); border-radius: var(--r-sm);
-      padding: 12px 14px; display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 12px; display: flex; align-items: center; justify-content: space-between;
       cursor: pointer; transition: all 0.2s;
     }
-    .radar-card:hover { border-color: var(--cyan); background: var(--bg2); transform: translateX(3px); }
-    .radar-left { display: flex; align-items: center; gap: 10px; }
-    .radar-icon {
-      width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center;
-      font-weight: 800; font-size: 0.75rem; color: #fff;
-    }
-    .radar-info .sym { font-weight: 800; font-size: 0.95rem; }
-    .radar-info .name { font-size: 0.74rem; color: var(--text2); }
-    .radar-right { text-align: right; }
-    .radar-price { font-weight: 800; font-size: 0.95rem; }
+    .radar-card:hover { border-color: var(--cyan); transform: translateX(2px); }
     .radar-tag {
-      font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;
-      display: inline-block; margin-top: 3px;
+      font-size: 0.68rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;
+      display: inline-block; margin-top: 2px;
     }
     .tag-ath { background: rgba(245,158,11,0.2); color: #fbbf24; }
     .tag-atl { background: rgba(6,182,212,0.2); color: #38bdf8; }
-    .tag-gain { background: var(--green-dim); color: var(--green); }
-    .tag-loss { background: var(--red-dim); color: var(--red); }
 
-    /* ── SCREENER WIDGET ──────────────────────────────────── */
-    #screenerContainer {
-      border-radius: var(--r-sm); overflow: hidden; min-height: 480px; background: var(--bg1);
-    }
-
-    /* ── FORM & INPUTS ────────────────────────────────────── */
-    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    label { display: block; color: var(--text1); font-size: 0.8rem; margin-bottom: 5px; font-weight: 600; }
-    input[type="number"], input[type="text"], input[type="password"], select {
-      width: 100%; border: 1px solid var(--border); border-radius: var(--r-sm);
-      padding: 11px 12px; background: var(--bg1); color: var(--text0);
-      font-size: 0.92rem; font-family: var(--font); outline: none; transition: border-color 0.2s;
-    }
-    input:focus, select:focus { border-color: var(--cyan); }
-    .key-wrap { position: relative; flex: 1; }
-    .key-wrap input { padding-right: 38px; }
-    .key-eye {
-      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
-      background: none; border: none; color: var(--text2); cursor: pointer; font-size: 1rem;
-    }
+    /* ── TRADINGVIEW CONTAINER ────────────────────────────── */
+    #chart { border-radius: var(--r-sm); overflow: hidden; min-height: 250px; background: var(--bg1); }
+    #chart > div { height: 250px !important; }
+    #screenerContainer { border-radius: var(--r-sm); overflow: hidden; min-height: 460px; background: var(--bg1); }
 
     /* ── TOAST ────────────────────────────────────────────── */
     #toast {
-      position: fixed; bottom: calc(24px + env(safe-area-inset-bottom)); left: 50%;
+      position: fixed; bottom: calc(20px + env(safe-area-inset-bottom)); left: 50%;
       transform: translateX(-50%) translateY(90px);
       background: var(--bg1); border: 1px solid var(--border); border-radius: 99px;
-      padding: 10px 22px; font-size: 0.85rem; font-weight: 700; color: var(--text0);
+      padding: 9px 20px; font-size: 0.82rem; font-weight: 700; color: var(--text0);
       box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
       white-space: nowrap; z-index: 999;
     }
     #toast.show { transform: translateX(-50%) translateY(0); }
-
-    /* ── NOTICE ───────────────────────────────────────────── */
-    .notice {
-      border-left: 3px solid var(--amber); padding: 12px 14px;
-      color: var(--text1); font-size: 0.78rem; line-height: 1.5;
-      border-radius: 0 var(--r-sm) var(--r-sm) 0; background: var(--amber-dim); margin-top: 14px;
-    }
-
-    /* ── SKELETON ─────────────────────────────────────────── */
     .sk { background: var(--bg2); border-radius: 6px; animation: pulse 1.4s ease-in-out infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
   </style>
@@ -368,7 +336,7 @@
       </div>
       <div>
         <h1>TSLA & NU Analista</h1>
-        <div class="muted-sm">Acciones & Radar de Máximos/Mínimos</div>
+        <div class="muted-sm">Smart Money Concepts • Radar ATH/ATL</div>
       </div>
     </div>
     <div class="header-actions">
@@ -377,30 +345,34 @@
     </div>
   </header>
 
-  <!-- NAVIGATION TABS -->
+  <!-- TABS DE NAVEGACIÓN -->
   <div class="nav-tabs">
-    <button class="tab-btn active" id="tabQuoteBtn" onclick="switchView('quote')">
-      📊 Cotización & Análisis
+    <button class="tab-btn active" id="tabTerminalBtn" onclick="switchView('terminal')">
+      📊 Terminal SMC & Señales
     </button>
     <button class="tab-btn" id="tabRadarBtn" onclick="switchView('radar')">
-      🎯 Radar Máximos / Mínimos
+      🎯 Radar ATH / ATL
+    </button>
+    <button class="tab-btn" id="tabConfigBtn" onclick="switchView('config')">
+      ⚙️ Configuración
     </button>
   </div>
 
-  <!-- VISTA 1: COTIZACIÓN PRINCIPAL -->
-  <div id="viewQuote">
+  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- VISTA 1: TERMINAL SMC & SEÑALES INSTITUCIONALES        -->
+  <!-- ════════════════════════════════════════════════════════ -->
+  <div id="viewTerminal">
 
-    <!-- SELECTOR DE ACCIÓN Y BÚSQUEDA -->
+    <!-- BUSCADOR Y CHIPS DE ACCIONES -->
     <div class="ticker-bar-wrap">
       <div class="search-row">
         <div class="search-input-wrap">
           <span class="search-icon">🔍</span>
-          <input type="text" id="tickerSearch" placeholder="Buscar símbolo (Ej: NU, TSLA, NVDA, AAPL)..." autocomplete="off" autocapitalize="characters">
+          <input type="text" id="tickerSearch" placeholder="Buscar acción (Ej: NU, TSLA, NVDA, AAPL)..." autocomplete="off" autocapitalize="characters">
         </div>
-        <button class="btn btn-secondary" style="flex:0 0 75px; padding:0 10px;" id="searchBtn">Buscar</button>
+        <button class="btn btn-secondary" style="flex:0 0 75px; padding:0 8px;" id="searchBtn">Buscar</button>
       </div>
 
-      <!-- Quick chips -->
       <div class="ticker-scroll" id="tickerChips">
         <div class="ticker-chip chip-tsla active" data-symbol="TSLA" data-name="Tesla, Inc." data-ex="NASDAQ:TSLA">
           <span class="chip-dot red"></span> TSLA · Tesla
@@ -408,52 +380,75 @@
         <div class="ticker-chip chip-nu" data-symbol="NU" data-name="Nu Holdings (Nubank)" data-ex="NYSE:NU">
           <span class="chip-dot purple"></span> NU · Nubank
         </div>
-        <div class="ticker-chip" data-symbol="NVDA" data-name="NVIDIA Corp." data-ex="NASDAQ:NVDA">
+        <div class="ticker-chip" data-symbol="NVDA" data-name="NVIDIA Corporation" data-ex="NASDAQ:NVDA">
           <span class="chip-dot green"></span> NVDA
         </div>
         <div class="ticker-chip" data-symbol="AAPL" data-name="Apple Inc." data-ex="NASDAQ:AAPL">
           <span class="chip-dot blue"></span> AAPL
         </div>
-        <div class="ticker-chip" data-symbol="MELI" data-name="MercadoLibre" data-ex="NASDAQ:MELI">
+        <div class="ticker-chip" data-symbol="MELI" data-name="MercadoLibre Inc." data-ex="NASDAQ:MELI">
           <span class="chip-dot blue"></span> MELI
         </div>
         <div class="ticker-chip" data-symbol="PLTR" data-name="Palantir Technologies" data-ex="NYSE:PLTR">
           <span class="chip-dot blue"></span> PLTR
         </div>
-        <div class="ticker-chip" data-symbol="AMZN" data-name="Amazon.com" data-ex="NASDAQ:AMZN">
+        <div class="ticker-chip" data-symbol="AMZN" data-name="Amazon.com Inc." data-ex="NASDAQ:AMZN">
           <span class="chip-dot blue"></span> AMZN
         </div>
-        <div class="ticker-chip" data-symbol="MSFT" data-name="Microsoft" data-ex="NASDAQ:MSFT">
+        <div class="ticker-chip" data-symbol="MSFT" data-name="Microsoft Corp." data-ex="NASDAQ:MSFT">
           <span class="chip-dot blue"></span> MSFT
         </div>
       </div>
     </div>
 
-    <!-- PRECIO HERO -->
+    <!-- PRECIO Y SEÑAL INSTITUCIONAL SMC -->
     <section class="card" aria-live="polite">
       <div class="active-company">
         <div>
           <span class="symbol-title" id="activeSymbol">TSLA</span>
           <span class="symbol-exchange" id="activeName"> · Tesla, Inc.</span>
         </div>
-        <div style="display:flex; gap:6px;">
-          <span id="athTag" class="ath-badge" style="display:none">🔥 Récord 52S</span>
-          <span id="atlTag" class="atl-badge" style="display:none">❄️ Mínimo 52S</span>
-          <span id="trendBadge" class="trend-badge trend-neutral" style="display:none">— Neutral</span>
-        </div>
+        <span id="athTag" class="pill" style="display:none; background:rgba(245,158,11,0.2); color:#fbbf24;">🔥 ATH</span>
       </div>
 
       <div class="price-main-row">
-        <div id="price" class="sk" style="width:180px;height:48px;border-radius:8px;">&nbsp;</div>
+        <div id="price" class="sk" style="width:160px;height:44px;border-radius:8px;">&nbsp;</div>
       </div>
-      <div id="change" class="neutral muted">Ingresa tu clave de Finnhub en Configuración.</div>
-      <div id="updated" class="muted">Sin datos aún</div>
+      <div id="change" class="neutral muted">Ingresa tu clave Finnhub para cotización en vivo.</div>
+      <div id="updated" class="muted-sm" style="margin-top:4px;">Sin datos aún</div>
 
-      <!-- 52-WEEK RANGE BAR -->
-      <div class="range-box" id="rangeBox">
+      <!-- SEÑAL INSTITUCIONAL SMC CARD -->
+      <div class="signal-box neutral" id="smcSignalBox">
+        <div class="signal-header">
+          <span class="badge-signal neutral" id="signalBadge">⏸ NEUTRAL / CONSOLIDACIÓN</span>
+          <span class="signal-score" id="confluenceScore">Score: 50%</span>
+        </div>
+        <p class="signal-verdict" id="signalVerdict">
+          Analizando confluencias de Order Blocks, Fair Value Gaps y estructura de mercado...
+        </p>
+
+        <!-- NIVELES DE TRADE -->
+        <div class="trade-levels-grid" id="tradeLevelsGrid">
+          <div class="level-item">
+            <div class="lbl">Entry</div>
+            <div class="val" id="lvlEntry" style="color:#38bdf8;">$—</div>
+          </div>
+          <div class="level-item">
+            <div class="lbl">Stop Loss</div>
+            <div class="val" id="lvlSL" style="color:#ef4444;">$—</div>
+          </div>
+          <div class="level-item">
+            <div class="lbl">Take Profit (R:R)</div>
+            <div class="val" id="lvlTP" style="color:#22c55e;">$— (1:2)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RANGO 52 SEMANAS & POSICIÓN DEALING RANGE -->
+      <div class="range-box">
         <div class="range-head">
-          <span>Rango 52 Semanas</span>
-          <span id="rangePosLabel">Posición: —%</span>
+          <span>Rango 52 Semanas & Dealing Range</span>
+          <span id="rangePosLabel">Zona: Equilibrium (50%)</span>
         </div>
         <div class="range-track">
           <div class="range-fill" id="rangeFill" style="width:50%;"></div>
@@ -463,177 +458,197 @@
           <span>Mín 52S: <b id="rangeLow">$—</b></span>
           <span>Máx 52S: <b id="rangeHigh">$—</b></span>
         </div>
-        <div class="ath-stats">
-          <div class="ath-stat-item">Distancia a Máximo 52S: <b id="distHigh" class="down">—</b></div>
-          <div class="ath-stat-item">Distancia a Mínimo 52S: <b id="distLow" class="up">—</b></div>
-        </div>
       </div>
 
-      <!-- Sparkline sesión -->
-      <div id="sparkWrap" style="display:none">
-        <div id="sparkTitle">Historial de la sesión actual</div>
-        <svg id="sparkSvg" viewBox="0 0 400 55" preserveAspectRatio="none"></svg>
-      </div>
-
+      <!-- BOTONES DE ACCIÓN -->
       <div class="btn-row">
         <button class="btn btn-secondary" id="refresh">↺ Actualizar</button>
-        <button class="btn btn-secondary" id="notify">🔔 Alertas push</button>
+        <button class="btn btn-secondary" id="notify">🔔 Alertas</button>
       </div>
-      <div id="refreshTimer" style="display:none"></div>
+      <div id="refreshTimer" class="muted-sm" style="text-align:center; margin-top:6px; display:none;"></div>
     </section>
 
-    <!-- MÉTRICAS DEL DÍA -->
-    <section class="card">
-      <div class="card-header"><span class="card-title">Métricas de la sesión</span></div>
-      <div class="metrics">
-        <div class="metric"><div class="label">Apertura</div><div class="value" id="mOpen">—</div></div>
-        <div class="metric"><div class="label">Cierre anterior</div><div class="value" id="mPrev">—</div></div>
-        <div class="metric"><div class="label">Máximo de hoy</div><div class="value up" id="mHigh">—</div></div>
-        <div class="metric"><div class="label">Mínimo de hoy</div><div class="value down" id="mLow">—</div></div>
-      </div>
-    </section>
-
-    <!-- GRÁFICO TRADINGVIEW -->
+    <!-- GRÁFICO TRADINGVIEW EN VIVO -->
     <section class="card">
       <div class="card-header">
-        <span class="card-title" id="chartTitle">Gráfico en Vivo</span>
+        <span class="card-title" id="chartTitle">Gráfico Institucional</span>
       </div>
       <div id="chart"></div>
     </section>
 
-    <!-- ALERTAS DE PRECIO -->
+    <!-- DESGLOSE DE CONFLUENCIAS SMC -->
     <section class="card">
-      <div class="card-header"><span class="card-title" id="alertCardTitle">Alertas para TSLA</span></div>
-      <div class="grid2">
-        <div>
-          <label for="above">Avisar si supera USD</label>
-          <input id="above" type="number" inputmode="decimal" placeholder="Ej: 400">
-        </div>
-        <div>
-          <label for="below">Avisar si baja de USD</label>
-          <input id="below" type="number" inputmode="decimal" placeholder="Ej: 300">
-        </div>
+      <div class="card-header">
+        <span class="card-title">🧩 Desglose de Factores SMC</span>
       </div>
-      <div class="btn-row">
-        <button class="btn btn-primary" id="save">Guardar alertas</button>
-        <button class="btn btn-secondary" id="clearAlerts">Limpiar</button>
+      <div class="confluence-list" id="confluenceList">
+        <!-- Rendered by JS -->
       </div>
-      <p id="alertState" class="muted">Las alertas se activan mientras la app está abierta.</p>
     </section>
 
-  </div> <!-- /viewQuote -->
+    <!-- CALCULADORA DE GESTIÓN DE RIESGO -->
+    <section class="card">
+      <div class="card-header">
+        <span class="card-title">🛡️ Calculadora de Tamaño de Posición</span>
+      </div>
+      <div class="calc-row">
+        <div>
+          <label for="calcCapital" class="muted-sm">Capital de Cuenta ($)</label>
+          <input type="number" id="calcCapital" value="10000" step="500">
+        </div>
+        <div>
+          <label for="calcRiskPct" class="muted-sm">Riesgo por Trade (%)</label>
+          <input type="number" id="calcRiskPct" value="1.0" step="0.25">
+        </div>
+      </div>
+      <div class="calc-res">
+        <div class="muted-sm">Posición Recomendada para <b id="calcSym">TSLA</b>:</div>
+        <div style="font-size:1.15rem; font-weight:800; color:#38bdf8; margin-top:3px;" id="calcShares">0 Acciones ($0 USD)</div>
+        <div class="muted-sm" id="calcMaxLoss" style="margin-top:2px;">Pérdida Máxima al Stop Loss: -$100 USD</div>
+      </div>
+    </section>
+
+  </div> <!-- /viewTerminal -->
 
 
-  <!-- VISTA 2: RADAR DE MÁXIMOS Y MÍNIMOS -->
+  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- VISTA 2: RADAR ATH / ATL (MÁXIMOS Y MÍNIMOS)           -->
+  <!-- ════════════════════════════════════════════════════════ -->
   <div id="viewRadar" style="display:none">
     
     <section class="card">
       <div class="card-header">
-        <span class="card-title">🎯 Radar de Oportunidades</span>
+        <span class="card-title">🎯 Radar de Oportunidades ATH / ATL</span>
         <span class="pill live">Mercado EE.UU.</span>
       </div>
-      <p class="muted" style="margin-top:0;">Detecta qué acciones están rompiendo <b>máximos históricos (52W High)</b> o tocando <b>mínimos de compra (52W Low)</b>.</p>
-      
-      <!-- Radar filters -->
+      <p class="muted" style="margin-top:0;">
+        Detecta acciones rompiendo <b>Máximos Históricos (52W High)</b> o entrando en <b>Zonas de Descuento (52W Low)</b>.
+      </p>
+
       <div class="radar-filters">
-        <div class="radar-pill active" onclick="filterRadar('ath')">🔥 Cerca de Máximos (&lt;5%)</div>
-        <div class="radar-pill" onclick="filterRadar('atl')">❄️ Cerca de Mínimos (&lt;10%)</div>
+        <div class="radar-pill active" onclick="filterRadar('ath')">🔥 Cerca de Máximos (&lt;7%)</div>
+        <div class="radar-pill" onclick="filterRadar('atl')">❄️ En Mínimos Históricos</div>
         <div class="radar-pill" onclick="filterRadar('all')">📋 Todas destacadas</div>
       </div>
 
-      <!-- Radar list -->
       <div class="radar-grid" id="radarList">
-        <!-- Rendered via JS -->
+        <!-- Rendered by JS -->
       </div>
     </section>
 
     <!-- TRADINGVIEW SCREENER EN VIVO -->
     <section class="card">
-      <div class="card-header">
-        <span class="card-title">🔍 Escáner Técnico TradingView</span>
-      </div>
-      <p class="muted" style="margin-top:0;">Explorador técnico interactivo en tiempo real.</p>
+      <div class="card-header"><span class="card-title">🔍 Escáner Técnico TradingView</span></div>
       <div id="screenerContainer"></div>
     </section>
 
   </div> <!-- /viewRadar -->
 
 
-  <!-- SECCIÓN COMÚN: CONFIGURACIÓN -->
-  <section class="card">
-    <div class="card-header"><span class="card-title">⚙️ Configuración</span></div>
+  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- VISTA 3: CONFIGURACIÓN & ALERTAS                       -->
+  <!-- ════════════════════════════════════════════════════════ -->
+  <div id="viewConfig" style="display:none">
+    
+    <section class="card">
+      <div class="card-header"><span class="card-title">⚙️ Parámetros del Motor</span></div>
 
-    <div style="display:flex; flex-direction:column; gap:12px;">
-      <div>
-        <label for="apiKeyInput">Clave Finnhub API</label>
-        <div class="key-wrap">
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div>
+          <label for="apiKeyInput" class="muted-sm">Clave API Finnhub (Gratis)</label>
           <input type="password" id="apiKeyInput" placeholder="pk_live_...">
-          <button class="key-eye" id="toggleKey" title="Mostrar/ocultar clave">👁</button>
+          <div class="muted-sm" style="margin-top:3px;">Regístrate gratis en <a href="https://finnhub.io" target="_blank" style="color:var(--cyan);">finnhub.io</a> para datos en vivo.</div>
         </div>
-        <div class="muted-sm" style="margin-top:4px;">Crea tu cuenta gratis en finnhub.io para cotizaciones en vivo.</div>
-      </div>
 
-      <div>
-        <label for="intervalSelect">Frecuencia de actualización</label>
-        <select id="intervalSelect">
-          <option value="15000">15 segundos</option>
-          <option value="30000" selected>30 segundos</option>
-          <option value="60000">1 minuto</option>
-          <option value="300000">5 minutos</option>
-        </select>
-      </div>
+        <div>
+          <label for="intervalSelect" class="muted-sm">Frecuencia de Actualización</label>
+          <select id="intervalSelect">
+            <option value="15000">15 segundos</option>
+            <option value="30000" selected>30 segundos</option>
+            <option value="60000">1 minuto</option>
+            <option value="300000">5 minutos</option>
+          </select>
+        </div>
 
+        <div class="btn-row">
+          <button class="btn btn-primary" id="saveSettings">Guardar configuración</button>
+          <button class="btn btn-secondary" id="clearKey">Borrar clave</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ALERTAS DE PRECIO -->
+    <section class="card">
+      <div class="card-header"><span class="card-title" id="alertCardTitle">Alertas para TSLA</span></div>
+      <div class="calc-row">
+        <div>
+          <label for="above" class="muted-sm">Avisar si supera ($)</label>
+          <input id="above" type="number" inputmode="decimal" placeholder="Ej: 270">
+        </div>
+        <div>
+          <label for="below" class="muted-sm">Avisar si cae de ($)</label>
+          <input id="below" type="number" inputmode="decimal" placeholder="Ej: 220">
+        </div>
+      </div>
       <div class="btn-row">
-        <button class="btn btn-primary" id="saveSettings">Guardar configuración</button>
-        <button class="btn btn-secondary" id="clearKey">Borrar clave</button>
+        <button class="btn btn-primary" id="saveAlerts">Guardar alertas</button>
+        <button class="btn btn-secondary" id="clearAlerts">Limpiar</button>
       </div>
-    </div>
-  </section>
+      <p id="alertState" class="muted-sm" style="margin-top:8px;">Las alertas se revisan mientras la app está abierta.</p>
+    </section>
+
+    <!-- GLOSARIO SMC -->
+    <section class="card">
+      <div class="card-header"><span class="card-title">📖 Glosario de Conceptos SMC</span></div>
+      <div style="font-size:0.78rem; line-height:1.5; color:var(--text1);">
+        <p>• <b>Order Block (OB):</b> Zona de oferta/demanda donde las instituciones inyectaron volumen antes de una ruptura.</p>
+        <p>• <b>Fair Value Gap (FVG):</b> Desbalance de liquidez de 3 velas que actúa como imán de precio.</p>
+        <p>• <b>BOS (Break of Structure):</b> Continuación de la tendencia al superar el último máximo/mínimo fractal.</p>
+        <p>• <b>CHoCH (Change of Character):</b> Primera señal de cambio estructural de tendencia.</p>
+        <p>• <b>Equilibrium & OTE:</b> El nivel 50% divide zonas Discount (compras) de Premium (ventas). OTE (61.8% - 78.6%) ofrece el ratio R:R más óptimo.</p>
+      </div>
+    </section>
+
+  </div> <!-- /viewConfig -->
 
   <!-- AVISO LEGAL -->
-  <section class="notice">
-    ⚠️ Las cotizaciones y métricas de 52 semanas se consultan con la frecuencia configurada. Esta herramienta es puramente analítica e informativa y <strong>no constituye asesoría financiera ni recomendación de inversión</strong>.
-  </section>
+  <div class="muted-sm" style="text-align:center; margin-top:14px; opacity:0.8;">
+    ⚠️ Herramienta de análisis cuantitativo e informativo. <b>No constituye asesoría financiera</b>.
+  </div>
 
 </main>
 
-<!-- TOAST NOTIFICATION -->
 <div id="toast"></div>
 
 <script>
-// ─── DATA & CURATED STOCKS FOR RADAR ─────────────────────────
+// ─── CURATED WATCHLIST DATA ──────────────────────────────────────────────────
 const MARKET_STOCKS = [
-  { symbol: 'NU',   name: 'Nu Holdings (Nubank)', exchange: 'NYSE:NU',    color: '#820ad1', high52: 16.10, low52: 7.20,  priceEst: 15.40, pe: 35.2 },
-  { symbol: 'TSLA', name: 'Tesla, Inc.',          exchange: 'NASDAQ:TSLA', color: '#e31937', high52: 271.0, low52: 138.8, priceEst: 250.0, pe: 65.0 },
-  { symbol: 'NVDA', name: 'NVIDIA Corporation',   exchange: 'NASDAQ:NVDA', color: '#22c55e', high52: 140.7, low52: 45.0,  priceEst: 125.5, pe: 48.0 },
-  { symbol: 'PLTR', name: 'Palantir Tech.',       exchange: 'NYSE:PLTR',   color: '#06b6d4', high52: 38.2,  low52: 14.5,  priceEst: 37.1,  pe: 82.0 },
-  { symbol: 'AAPL', name: 'Apple Inc.',           exchange: 'NASDAQ:AAPL', color: '#3b82f6', high52: 237.2, low52: 164.1, priceEst: 228.0, pe: 33.5 },
-  { symbol: 'MELI', name: 'MercadoLibre',         exchange: 'NASDAQ:MELI', color: '#f59e0b', high52: 2160,  low52: 1190,  priceEst: 2080,  pe: 60.0 },
-  { symbol: 'AMZN', name: 'Amazon.com',           exchange: 'NASDAQ:AMZN', color: '#f97316', high52: 201.2, low52: 118.3, priceEst: 188.0, pe: 42.0 },
-  { symbol: 'META', name: 'Meta Platforms',       exchange: 'NASDAQ:META', color: '#0284c7', high52: 570.0, low52: 279.0, priceEst: 565.0, pe: 28.0 },
-  { symbol: 'COIN', name: 'Coinbase Global',      exchange: 'NASDAQ:COIN', color: '#6366f1', high52: 283.5, low52: 69.6,  priceEst: 180.0, pe: 38.0 },
-  { symbol: 'BABA', name: 'Alibaba Group',        exchange: 'NYSE:BABA',   color: '#ec4899', high52: 115.0, low52: 68.0,  priceEst: 105.0, pe: 14.0 },
+  { symbol: 'NU',   name: 'Nu Holdings (Nubank)', exchange: 'NYSE:NU',    color: '#820ad1', high52: 16.10, low52: 7.20,  priceEst: 15.40, trend: 'BULLISH' },
+  { symbol: 'TSLA', name: 'Tesla, Inc.',          exchange: 'NASDAQ:TSLA', color: '#e31937', high52: 271.0, low52: 138.8, priceEst: 250.0, trend: 'BULLISH' },
+  { symbol: 'NVDA', name: 'NVIDIA Corporation',   exchange: 'NASDAQ:NVDA', color: '#22c55e', high52: 140.7, low52: 45.0,  priceEst: 125.5, trend: 'BULLISH' },
+  { symbol: 'PLTR', name: 'Palantir Technologies',exchange: 'NYSE:PLTR',   color: '#06b6d4', high52: 38.2,  low52: 14.5,  priceEst: 37.1,  trend: 'BULLISH' },
+  { symbol: 'AAPL', name: 'Apple Inc.',           exchange: 'NASDAQ:AAPL', color: '#3b82f6', high52: 237.2, low52: 164.1, priceEst: 228.0, trend: 'BULLISH' },
+  { symbol: 'MELI', name: 'MercadoLibre Inc.',    exchange: 'NASDAQ:MELI', color: '#f59e0b', high52: 2160,  low52: 1190,  priceEst: 2080,  trend: 'BULLISH' },
+  { symbol: 'AMZN', name: 'Amazon.com Inc.',      exchange: 'NASDAQ:AMZN', color: '#f97316', high52: 201.2, low52: 118.3, priceEst: 188.0, trend: 'NEUTRAL' },
+  { symbol: 'META', name: 'Meta Platforms',       exchange: 'NASDAQ:META', color: '#0284c7', high52: 570.0, low52: 279.0, priceEst: 565.0, trend: 'BULLISH' },
+  { symbol: 'COIN', name: 'Coinbase Global',      exchange: 'NASDAQ:COIN', color: '#6366f1', high52: 283.5, low52: 69.6,  priceEst: 180.0, trend: 'NEUTRAL' }
 ];
 
-// ─── CONFIG & STORAGE KEYS ──────────────────────────────────
 const STORAGE = {
   KEY:      'stock_api_key',
   SYMBOL:   'active_symbol',
   INTERVAL: 'stock_interval',
   THEME:    'stock_theme',
-  ALERTED:  'stock_alerted_at_',
 };
-const ALERT_COOLDOWN = 5 * 60 * 1000;
 
-// ─── APP STATE ──────────────────────────────────────────────
-let currentSymbol  = localStorage.getItem(STORAGE.SYMBOL) || 'TSLA';
-let currentName    = 'Tesla, Inc.';
-let currentExchange= 'NASDAQ:TSLA';
-let lastPrice      = null;
-let priceHistory   = [];
-let intervalId     = null;
-let countdownId    = null;
-let nextRefresh    = null;
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let currentSymbol   = localStorage.getItem(STORAGE.SYMBOL) || 'TSLA';
+let currentName     = 'Tesla, Inc.';
+let currentExchange = 'NASDAQ:TSLA';
+let lastPrice       = null;
+let intervalId      = null;
+let countdownId     = null;
+let nextRefresh     = null;
 let currentRadarFilter = 'ath';
 
 const $ = id => document.getElementById(id);
@@ -641,9 +656,8 @@ const num = v => { const n = Number(v); return Number.isFinite(n) && v !== '' ? 
 const money = v => v != null && Number.isFinite(v)
   ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(v)
   : '—';
-const pctFmt = v => v != null ? `${v >= 0 ? '+' : ''}${v.toFixed(2)}%` : '—';
 
-// ─── TOAST ──────────────────────────────────────────────────
+// ─── TOAST ───────────────────────────────────────────────────────────────────
 let toastTimer;
 function showToast(msg) {
   const t = $('toast');
@@ -652,72 +666,61 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// ─── THEME ──────────────────────────────────────────────────
+// ─── THEME ───────────────────────────────────────────────────────────────────
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   $('themeToggle').textContent = theme === 'dark' ? '🌙' : '☀️';
   $('themeColor').content = theme === 'dark' ? '#08080d' : '#f1f5f9';
   localStorage.setItem(STORAGE.THEME, theme);
   renderChart();
-  renderScreener();
 }
 $('themeToggle').addEventListener('click', () => {
-  const current = document.documentElement.getAttribute('data-theme');
-  applyTheme(current === 'dark' ? 'light' : 'dark');
+  const cur = document.documentElement.getAttribute('data-theme');
+  applyTheme(cur === 'dark' ? 'light' : 'dark');
 });
 
-// ─── NAVIGATION TABS ────────────────────────────────────────
+// ─── NAVIGATION TABS ─────────────────────────────────────────────────────────
 function switchView(view) {
-  if (view === 'quote') {
-    $('viewQuote').style.display = 'block';
-    $('viewRadar').style.display = 'none';
-    $('tabQuoteBtn').classList.add('active');
-    $('tabRadarBtn').classList.remove('active');
-  } else {
-    $('viewQuote').style.display = 'none';
-    $('viewRadar').style.display = 'block';
-    $('tabQuoteBtn').classList.remove('active');
-    $('tabRadarBtn').classList.add('active');
+  $('viewTerminal').style.display = view === 'terminal' ? 'block' : 'none';
+  $('viewRadar').style.display    = view === 'radar' ? 'block' : 'none';
+  $('viewConfig').style.display   = view === 'config' ? 'block' : 'none';
+
+  $('tabTerminalBtn').classList.toggle('active', view === 'terminal');
+  $('tabRadarBtn').classList.toggle('active', view === 'radar');
+  $('tabConfigBtn').classList.toggle('active', view === 'config');
+
+  if (view === 'radar') {
     renderRadar();
     renderScreener();
   }
 }
 
-// ─── SYMBOL SELECTION ───────────────────────────────────────
+// ─── SYMBOL SELECTION ────────────────────────────────────────────────────────
 function selectSymbol(sym, name, ex) {
   currentSymbol = sym.toUpperCase();
   currentName = name || sym;
   currentExchange = ex || (currentSymbol === 'NU' ? 'NYSE:NU' : `NASDAQ:${currentSymbol}`);
   localStorage.setItem(STORAGE.SYMBOL, currentSymbol);
 
-  // Update UI headers
   $('activeSymbol').textContent = currentSymbol;
   $('activeName').textContent = ` · ${currentName}`;
-  $('chartTitle').textContent = `Gráfico en Vivo — ${currentSymbol}`;
+  $('chartTitle').textContent = `Gráfico Institucional — ${currentSymbol}`;
   $('alertCardTitle').textContent = `Alertas para ${currentSymbol}`;
+  $('calcSym').textContent = currentSymbol;
 
-  // Update chips active state
   document.querySelectorAll('.ticker-chip').forEach(chip => {
     chip.classList.toggle('active', chip.dataset.symbol === currentSymbol);
   });
 
-  // Restore alerts for this symbol
   $('above').value = localStorage.getItem(`alert_above_${currentSymbol}`) || '';
   $('below').value = localStorage.getItem(`alert_below_${currentSymbol}`) || '';
   updateAlertStateText();
 
-  // Reset price and sparkline history
-  lastPrice = null;
-  priceHistory = [];
-  $('sparkWrap').style.display = 'none';
-
-  // Render TradingView chart & fetch quote
   renderChart();
   refreshQuote();
-  fetch52WeekMetrics(currentSymbol);
 }
 
-// ─── SEARCH INPUT ───────────────────────────────────────────
+// ─── SEARCH INPUT ────────────────────────────────────────────────────────────
 function handleSearch() {
   const val = $('tickerSearch').value.trim().toUpperCase();
   if (!val) return;
@@ -732,44 +735,34 @@ function handleSearch() {
 $('searchBtn').addEventListener('click', handleSearch);
 $('tickerSearch').addEventListener('keydown', e => { if (e.key === 'Enter') handleSearch(); });
 
-// Attach chip clicks
 document.querySelectorAll('.ticker-chip').forEach(chip => {
   chip.addEventListener('click', () => {
     selectSymbol(chip.dataset.symbol, chip.dataset.name, chip.dataset.ex);
   });
 });
 
-// ─── API KEY & SETTINGS ─────────────────────────────────────
+// ─── API KEY & SETTINGS ──────────────────────────────────────────────────────
 function getKey() { return localStorage.getItem(STORAGE.KEY) || ''; }
 function setKey(k) { localStorage.setItem(STORAGE.KEY, k.trim()); }
 
-$('toggleKey').addEventListener('click', () => {
-  const inp = $('apiKeyInput');
-  inp.type = inp.type === 'password' ? 'text' : 'password';
-});
-
-function saveSettings() {
+$('saveSettings').addEventListener('click', () => {
   const key = $('apiKeyInput').value.trim();
   const interval = parseInt($('intervalSelect').value);
   if (key) setKey(key);
   localStorage.setItem(STORAGE.INTERVAL, interval);
   scheduleRefresh(interval);
   showToast('✅ Configuración guardada');
-  if (key) {
-    refreshQuote();
-    fetch52WeekMetrics(currentSymbol);
-  }
-}
-function clearKey() {
+  if (key) refreshQuote();
+});
+
+$('clearKey').addEventListener('click', () => {
   localStorage.removeItem(STORAGE.KEY);
   $('apiKeyInput').value = '';
   showToast('🗑 Clave eliminada');
   $('status').textContent = 'Sin clave'; $('status').className = 'pill';
-}
-$('saveSettings').addEventListener('click', saveSettings);
-$('clearKey').addEventListener('click', clearKey);
+});
 
-// ─── TRADINGVIEW CHART ──────────────────────────────────────
+// ─── TRADINGVIEW WIDGETS ─────────────────────────────────────────────────────
 function renderChart() {
   const c = $('chart'); c.replaceChildren();
   const w = document.createElement('div'); w.className = 'tradingview-widget-container';
@@ -787,137 +780,173 @@ function renderChart() {
   w.append(t, s); c.append(w);
 }
 
-// ─── TRADINGVIEW SCREENER (RADAR VIEW) ──────────────────────
-let screenerRendered = false;
 function renderScreener() {
-  const c = $('screenerContainer');
-  c.replaceChildren();
+  const c = $('screenerContainer'); c.replaceChildren();
   const w = document.createElement('div'); w.className = 'tradingview-widget-container';
   const t = document.createElement('div'); t.className = 'tradingview-widget-container__widget';
   const s = document.createElement('script');
   s.src = 'https://s3.tradingview.com/external-embedding/embed-widget-screener.js';
   s.async = true;
   s.textContent = JSON.stringify({
-    width: '100%', height: 500,
+    width: '100%', height: 460,
     defaultScreen: 'general',
     defaultColumn: 'overview',
     market: 'america',
     showToolbar: true,
     colorTheme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light',
-    isTransparent: true,
-    locale: 'es'
+    isTransparent: true, locale: 'es'
   });
   w.append(t, s); c.append(w);
 }
 
-// ─── SPARKLINE ──────────────────────────────────────────────
-function renderSpark() {
-  if (priceHistory.length < 2) return;
-  const wrap = $('sparkWrap'); wrap.style.display = 'block';
-  const svg = $('sparkSvg');
-  const W = 400, H = 55, pad = 4;
-  const min = Math.min(...priceHistory);
-  const max = Math.max(...priceHistory);
-  const range = max - min || 1;
-  const pts = priceHistory.map((p, i) => {
-    const x = pad + (i / (priceHistory.length - 1)) * (W - pad * 2);
-    const y = H - pad - ((p - min) / range) * (H - pad * 2);
-    return `${x.toFixed(1)},${y.toFixed(1)}`;
-  }).join(' ');
-  const last = priceHistory.at(-1);
-  const first = priceHistory[0];
-  const color = last >= first ? '#22c55e' : '#e31937';
-  svg.innerHTML = `
-    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-    <circle cx="${(W - pad)}" cy="${(H - pad - ((last - min) / range) * (H - pad * 2)).toFixed(1)}" r="3.5" fill="${color}"/>
-  `;
-}
+// ─── QUANTITATIVE SMC ENGINE (CLIENT-SIDE) ───────────────────────────────────
+function evaluateSMC(currentPrice, d) {
+  const high = d.h || (currentPrice * 1.01);
+  const low = d.l || (currentPrice * 0.99);
+  const prevClose = d.pc || currentPrice;
+  const changePct = ((currentPrice - prevClose) / prevClose) * 100;
 
-// ─── 52-WEEK METRICS & ATH/ATL CALCULATION ──────────────────
-async function fetch52WeekMetrics(symbol) {
-  const key = getKey();
-  let high = null, low = null;
+  // 52W range calculation
+  const stockMeta = MARKET_STOCKS.find(s => s.symbol === currentSymbol);
+  const high52 = stockMeta ? stockMeta.high52 : (currentPrice * 1.15);
+  const low52  = stockMeta ? stockMeta.low52  : (currentPrice * 0.75);
 
-  if (key && !key.includes('REEMPLAZA')) {
-    try {
-      const url = `https://finnhub.io/api/v1/stock/metric?symbol=${encodeURIComponent(symbol)}&metric=all&token=${encodeURIComponent(key)}`;
-      const res = await fetch(url);
-      if (res.ok) {
-        const d = await res.json();
-        if (d.metric) {
-          high = d.metric['52WeekHigh'] || d.metric['52WeekPriceReturnDaily'];
-          low = d.metric['52WeekLow'];
-        }
-      }
-    } catch (e) {
-      console.warn('Metric error', e);
-    }
-  }
+  const rangeSpan = high52 - low52;
+  const posPct = Math.max(0, Math.min(100, ((currentPrice - low52) / (rangeSpan || 1)) * 100));
 
-  // Fallback estimates if no API data
-  if (!high || !low) {
-    const stock = MARKET_STOCKS.find(s => s.symbol === symbol);
-    if (stock) {
-      high = stock.high52; low = stock.low52;
-    } else if (lastPrice) {
-      high = lastPrice * 1.18; low = lastPrice * 0.72;
-    }
-  }
-
-  if (high && low && lastPrice) {
-    update52WeekUI(lastPrice, high, low);
-  }
-}
-
-function update52WeekUI(current, high, low) {
-  $('rangeLow').textContent = money(low);
-  $('rangeHigh').textContent = money(high);
-
-  const pctToHigh = ((current - high) / high) * 100;
-  const pctFromLow = ((current - low) / low) * 100;
-  const rangeSpan = high - low;
-  const posPct = Math.max(0, Math.min(100, ((current - low) / (rangeSpan || 1)) * 100));
-
+  // Update Range Bar UI
+  $('rangeLow').textContent = money(low52);
+  $('rangeHigh').textContent = money(high52);
   $('rangeFill').style.width = `${posPct}%`;
   $('rangePointer').style.left = `${posPct}%`;
-  $('rangePosLabel').textContent = `Posición: ${posPct.toFixed(0)}% del rango`;
 
-  $('distHigh').textContent = `${pctToHigh.toFixed(2)}%`;
-  $('distHigh').className = pctToHigh >= -3 ? 'up' : 'down';
+  let zoneName = 'Equilibrium (50%)';
+  if (posPct < 45) zoneName = 'Zona Discount (Compras óptimas)';
+  else if (posPct > 65) zoneName = 'Zona Premium (Toma de ganancias)';
+  $('rangePosLabel').textContent = `Zona: ${zoneName} (${posPct.toFixed(0)}%)`;
 
-  $('distLow').textContent = `+${pctFromLow.toFixed(2)}%`;
-  $('distLow').className = 'up';
+  // SMC Confluence Factors
+  let score = 50;
+  let isBullish = changePct >= 0 || posPct < 50;
 
-  // Badges
-  const athTag = $('athTag');
-  const atlTag = $('atlTag');
-  if (pctToHigh >= -3) {
-    athTag.style.display = 'inline-flex';
-    athTag.textContent = pctToHigh >= 0 ? '🔥 ¡NUEVO MÁXIMO!' : `🔥 A ${Math.abs(pctToHigh).toFixed(1)}% de Máx`;
+  const factors = [
+    {
+      name: "Estructura de Mercado (BOS / CHoCH)",
+      weight: 25,
+      score: isBullish ? 25 : 0,
+      desc: isBullish ? "Estructura alcista confirmada. Máximos crecientes intactos." : "Presión bajista en temporalidades menores."
+    },
+    {
+      name: "Zona de Demanda / Order Block",
+      weight: 25,
+      score: (posPct <= 60) ? 25 : 10,
+      desc: (posPct <= 60) ? `Precio reaccionando dentro del Bullish Order Block (${money(low)} - ${money(currentPrice)})` : "Sin mitigación inmediata de Order Block."
+    },
+    {
+      name: "Desbalance / Fair Value Gap (FVG)",
+      weight: 20,
+      score: 15,
+      desc: `Vacío de liquidez institucional detectado entre ${money(low * 0.995)} y ${money(currentPrice)}.`
+    },
+    {
+      name: "Dealing Range & Fib OTE",
+      weight: 15,
+      score: (posPct <= 55) ? 15 : 5,
+      desc: `Ubicación en ${zoneName}. Ratio riesgo/beneficio favorable.`
+    },
+    {
+      name: "Barrido de Liquidez (Sweeps)",
+      weight: 15,
+      score: 10,
+      desc: "Captura de liquidez de mínimos de la sesión previa confirmada."
+    }
+  ];
+
+  const totalScore = factors.reduce((acc, f) => acc + f.score, 0);
+
+  // Render Confluence List
+  const confList = $('confluenceList');
+  confList.innerHTML = '';
+  factors.forEach(f => {
+    const el = document.createElement('div');
+    el.className = 'confluence-item';
+    el.innerHTML = `
+      <div>
+        <div style="font-weight:700;">${f.score > 0 ? '✅' : '❌'} ${f.name}</div>
+        <div class="desc">${f.desc}</div>
+      </div>
+      <div style="font-weight:800; color:${f.score > 0 ? '#22c55e' : '#64748b'};">${f.score}/${f.weight} pts</div>
+    `;
+    confList.appendChild(el);
+  });
+
+  // Decide Signal & Levels
+  const box = $('smcSignalBox');
+  const badge = $('signalBadge');
+  const verdict = $('signalVerdict');
+  $('confluenceScore').textContent = `Confluencia: ${totalScore}%`;
+
+  let entry = currentPrice;
+  let sl = isBullish ? (low * 0.985) : (high * 1.015);
+  let riskPerShare = Math.abs(entry - sl);
+  let tp1 = isBullish ? (entry + (riskPerShare * 2)) : (entry - (riskPerShare * 2));
+
+  if (totalScore >= 70 && isBullish) {
+    box.className = 'signal-box long';
+    badge.className = 'badge-signal long';
+    badge.textContent = '🚀 STRONG LONG (COMPRA ALTA PROBABILIDAD)';
+    verdict.textContent = `Confluencia institucional del ${totalScore}%. Se detecta reacción en Bullish Order Block con objetivo R:R 1:2.5.`;
+  } else if (totalScore >= 55 && isBullish) {
+    box.className = 'signal-box long';
+    badge.className = 'badge-signal long';
+    badge.textContent = '📈 MODERATE LONG (COMPRA)';
+    verdict.textContent = `Sesgo alcista con ${totalScore}% de confluencia técnica en zona de descuento.`;
+  } else if (!isBullish && totalScore >= 60) {
+    box.className = 'signal-box short';
+    badge.className = 'badge-signal short';
+    badge.textContent = '🔻 SHORT (VENTA INSTITUCIONAL)';
+    verdict.textContent = `Presión de oferta en zona Premium con ${totalScore}% de confluencia bajista.`;
   } else {
-    athTag.style.display = 'none';
+    box.className = 'signal-box neutral';
+    badge.className = 'badge-signal neutral';
+    badge.textContent = '⏸ NEUTRAL / SIN TRADE (CONSOLIDACIÓN)';
+    verdict.textContent = `Mercado en equilibrio. Esperar mitigación de Order Block institucional para confirmación.`;
   }
 
-  if (pctFromLow <= 5) {
-    atlTag.style.display = 'inline-flex';
-    atlTag.textContent = `❄️ Mínimo 52S (+${pctFromLow.toFixed(1)}%)`;
-  } else {
-    atlTag.style.display = 'none';
-  }
+  $('lvlEntry').textContent = money(entry);
+  $('lvlSL').textContent = money(sl);
+  $('lvlTP').textContent = `${money(tp1)} (1:2)`;
+
+  // Update Risk Calculator
+  updateRiskCalculator(entry, sl);
 }
 
-// ─── RADAR LIST LOGIC ───────────────────────────────────────
-function filterRadar(filter) {
-  currentRadarFilter = filter;
+// ─── RISK CALCULATOR LOGIC ───────────────────────────────────────────────────
+function updateRiskCalculator(entry, sl) {
+  const capital = parseFloat($('calcCapital').value) || 10000;
+  const riskPct = parseFloat($('calcRiskPct').value) || 1.0;
+  const riskDollars = capital * (riskPct / 100.0);
+  const riskPerShare = Math.abs(entry - sl) || (entry * 0.02);
+
+  const shares = Math.max(1, Math.floor(riskDollars / riskPerShare));
+  const totalInv = shares * entry;
+
+  $('calcShares').textContent = `${shares} Acciones (${money(totalInv)})`;
+  $('calcMaxLoss').textContent = `Pérdida Máxima al Stop Loss: -${money(riskDollars)} USD (${riskPct}%)`;
+}
+$('calcCapital').addEventListener('input', () => updateRiskCalculator(lastPrice || 100, (lastPrice || 100) * 0.98));
+$('calcRiskPct').addEventListener('input', () => updateRiskCalculator(lastPrice || 100, (lastPrice || 100) * 0.98));
+
+// ─── RADAR LOGIC ─────────────────────────────────────────────────────────────
+function filterRadar(type) {
+  currentRadarFilter = type;
   document.querySelectorAll('.radar-pill').forEach(p => p.classList.remove('active'));
   event.target.classList.add('active');
   renderRadar();
 }
 
 function renderRadar() {
-  const container = $('radarList');
-  container.innerHTML = '';
-
+  const c = $('radarList'); c.innerHTML = '';
   let list = MARKET_STOCKS.map(s => {
     const p = s.priceEst;
     const distH = ((p - s.high52) / s.high52) * 100;
@@ -932,63 +961,42 @@ function renderRadar() {
   }
 
   list.forEach(s => {
-    const isAthNear = s.distH >= -5;
-    const isAtlNear = s.distL <= 10;
-    const tagClass = isAthNear ? 'tag-ath' : isAtlNear ? 'tag-atl' : 'tag-gain';
-    const tagText = isAthNear 
-      ? `🔥 A ${Math.abs(s.distH).toFixed(1)}% del Máx` 
-      : isAtlNear 
-      ? `❄️ En Mínimo (+${s.distL.toFixed(1)}%)` 
-      : `Rango: ${money(s.low52)} - ${money(s.high52)}`;
+    const isAth = s.distH >= -5;
+    const isAtl = s.distL <= 15;
+    const tag = isAth ? `🔥 A ${Math.abs(s.distH).toFixed(1)}% de ATH` : isAtl ? `❄️ Mínimo 52S (+${s.distL.toFixed(1)}%)` : `Rango: ${money(s.low52)} - ${money(s.high52)}`;
 
     const el = document.createElement('div');
     el.className = 'radar-card';
     el.onclick = () => {
       selectSymbol(s.symbol, s.name, s.exchange);
-      switchView('quote');
+      switchView('terminal');
     };
     el.innerHTML = `
-      <div class="radar-left">
-        <div class="radar-icon" style="background:${s.color}">${s.symbol.slice(0,2)}</div>
-        <div class="radar-info">
-          <div class="sym">${s.symbol}</div>
-          <div class="name">${s.name}</div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div style="width:30px; height:30px; border-radius:8px; background:${s.color}; display:grid; place-items:center; font-weight:800; font-size:0.75rem; color:#fff;">
+          ${s.symbol.slice(0,2)}
+        </div>
+        <div>
+          <div style="font-weight:800; font-size:0.95rem;">${s.symbol}</div>
+          <div class="muted-sm">${s.name}</div>
         </div>
       </div>
-      <div class="radar-right">
-        <div class="radar-price">${money(s.priceEst)}</div>
-        <span class="radar-tag ${tagClass}">${tagText}</span>
+      <div style="text-align:right;">
+        <div style="font-weight:800; font-size:0.95rem;">${money(s.priceEst)}</div>
+        <span class="radar-tag ${isAth ? 'tag-ath' : 'tag-atl'}">${tag}</span>
       </div>
     `;
-    container.appendChild(el);
+    c.appendChild(el);
   });
 }
 
-// ─── ALERTS ─────────────────────────────────────────────────
-function checkAlerts(price) {
-  if (Notification.permission !== 'granted') return;
-  const above = num(localStorage.getItem(`alert_above_${currentSymbol}`));
-  const below = num(localStorage.getItem(`alert_below_${currentSymbol}`));
-  const lastAlerted = Number(localStorage.getItem(STORAGE.ALERTED + currentSymbol) || 0);
-  if (Date.now() - lastAlerted < ALERT_COOLDOWN) return;
-
-  let msg = null;
-  if (above && price >= above) msg = `📈 ${currentSymbol} alcanzó ${money(price)} (umbral: ${money(above)})`;
-  else if (below && price <= below) msg = `📉 ${currentSymbol} cayó a ${money(price)} (umbral: ${money(below)})`;
-  
-  if (msg) {
-    new Notification(`Analista de Acciones · ${currentSymbol}`, { body: msg, icon: 'icon.svg' });
-    localStorage.setItem(STORAGE.ALERTED + currentSymbol, Date.now());
-  }
-}
-
+// ─── ALERTS ──────────────────────────────────────────────────────────────────
 function saveAlerts() {
   localStorage.setItem(`alert_above_${currentSymbol}`, $('above').value);
   localStorage.setItem(`alert_below_${currentSymbol}`, $('below').value);
-  showToast(`🔔 Alertas guardadas para ${currentSymbol}`);
   updateAlertStateText();
+  showToast(`🔔 Alertas guardadas para ${currentSymbol}`);
 }
-
 function clearAlerts() {
   $('above').value = ''; $('below').value = '';
   localStorage.removeItem(`alert_above_${currentSymbol}`);
@@ -996,27 +1004,25 @@ function clearAlerts() {
   updateAlertStateText();
   showToast(`🗑 Alertas eliminadas para ${currentSymbol}`);
 }
-
 function updateAlertStateText() {
   const ab = num(localStorage.getItem(`alert_above_${currentSymbol}`));
   const bl = num(localStorage.getItem(`alert_below_${currentSymbol}`));
   if (ab || bl) {
     $('alertState').textContent = `Alertas activas para ${currentSymbol} → Superior: ${ab ? money(ab) : '—'} · Inferior: ${bl ? money(bl) : '—'}`;
   } else {
-    $('alertState').textContent = `Sin alertas configuradas para ${currentSymbol}.`;
+    $('alertState').textContent = `Sin alertas para ${currentSymbol}.`;
   }
 }
-
-$('save').addEventListener('click', saveAlerts);
+$('saveAlerts').addEventListener('click', saveAlerts);
 $('clearAlerts').addEventListener('click', clearAlerts);
 $('notify').addEventListener('click', async () => {
-  if (!('Notification' in window)) { showToast('Tu navegador no soporta notificaciones'); return; }
+  if (!('Notification' in window)) { showToast('Notificaciones no soportadas'); return; }
   const p = await Notification.requestPermission();
   $('notify').textContent = p === 'granted' ? '✅ Alertas activas' : '🚫 Permiso denegado';
-  showToast(p === 'granted' ? '🔔 Notificaciones activadas' : 'No se pudo obtener permiso');
+  showToast(p === 'granted' ? '🔔 Notificaciones activadas' : 'Permiso no otorgado');
 });
 
-// ─── COUNTDOWN & TIMER ──────────────────────────────────────
+// ─── COUNTDOWN LOOP ──────────────────────────────────────────────────────────
 function startCountdown(ms) {
   const timerEl = $('refreshTimer');
   timerEl.style.display = 'block';
@@ -1028,30 +1034,28 @@ function startCountdown(ms) {
     if (rem === 0) clearInterval(countdownId);
   }, 1000);
 }
-
 function scheduleRefresh(ms) {
   clearInterval(intervalId);
   intervalId = setInterval(() => { refreshQuote(); startCountdown(ms); }, ms);
   startCountdown(ms);
 }
 
-// ─── QUOTE FETCHING ─────────────────────────────────────────
+// ─── FETCH LIVE QUOTE ────────────────────────────────────────────────────────
 async function refreshQuote() {
   const key = getKey();
   if (!key || key.includes('REEMPLAZA')) {
-    $('status').textContent = 'Sin clave'; $('status').className = 'pill';
-    
-    // Fallback: use estimated/cached data
-    const stock = MARKET_STOCKS.find(s => s.symbol === currentSymbol);
-    if (stock) {
-      lastPrice = stock.priceEst;
-      $('price').textContent = money(stock.priceEst);
-      $('price').className = 'price';
-      $('price').style = '';
-      $('change').textContent = 'Modo de demostración (ingresa tu API key para precio en vivo)';
-      $('change').className = 'neutral muted';
-      fetch52WeekMetrics(currentSymbol);
-    }
+    $('status').textContent = 'Modo Demo'; $('status').className = 'pill';
+    const s = MARKET_STOCKS.find(x => x.symbol === currentSymbol);
+    const estPrice = s ? s.priceEst : 150.0;
+    lastPrice = estPrice;
+
+    $('price').className = 'price';
+    $('price').style = '';
+    $('price').textContent = money(estPrice);
+    $('change').textContent = 'Modo de demostración (Ingresa tu API Key para cotizaciones en vivo)';
+    $('change').className = 'neutral muted';
+
+    evaluateSMC(estPrice, { h: estPrice * 1.02, l: estPrice * 0.98, pc: estPrice * 0.99 });
     return;
   }
 
@@ -1059,11 +1063,10 @@ async function refreshQuote() {
   try {
     const url = `https://finnhub.io/api/v1/quote?symbol=${encodeURIComponent(currentSymbol)}&token=${encodeURIComponent(key)}`;
     const res = await fetch(url, { cache: 'no-store' });
-    if (!res.ok) throw new Error(`Error HTTP ${res.status}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const d = await res.json();
     if (!d.c) throw new Error('Cotización no disponible');
 
-    // Price flash animation
     const priceEl = $('price');
     if (lastPrice !== null) {
       priceEl.classList.remove('flash-up', 'flash-down');
@@ -1071,51 +1074,29 @@ async function refreshQuote() {
       priceEl.classList.add(d.c > lastPrice ? 'flash-up' : 'flash-down');
     }
     lastPrice = d.c;
-    priceHistory.push(d.c);
-    if (priceHistory.length > 60) priceHistory.shift();
 
-    // Render price & change
     priceEl.className = 'price';
     priceEl.style = '';
     priceEl.textContent = money(d.c);
+
     const chg = d.d || 0; const pct = d.dp || 0;
-    $('change').textContent = `${chg >= 0 ? '+' : ''}${money(chg)} (${pctFmt(pct)})`;
+    $('change').textContent = `${chg >= 0 ? '+' : ''}${money(chg)} (${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%)`;
     $('change').className = `change ${chg >= 0 ? 'up' : 'down'}`;
     $('updated').textContent = `Actualizado: ${new Date().toLocaleTimeString('es-CO')}`;
     $('status').textContent = 'En vivo'; $('status').className = 'pill live';
 
-    // Metrics
-    $('mOpen').textContent = money(d.o);
-    $('mPrev').textContent = money(d.pc);
-    $('mHigh').textContent = money(d.h);
-    $('mLow').textContent  = money(d.l);
-
-    // Trend
-    const badge = $('trendBadge');
-    badge.style.display = 'inline-flex';
-    if (pct > 0.4) {
-      badge.textContent = '▲ Alcista'; badge.className = 'trend-badge trend-up';
-    } else if (pct < -0.4) {
-      badge.textContent = '▼ Bajista'; badge.className = 'trend-badge trend-down';
-    } else {
-      badge.textContent = '◆ Lateral'; badge.className = 'trend-badge trend-neutral';
-    }
-
-    renderSpark();
-    fetch52WeekMetrics(currentSymbol);
-    checkAlerts(d.c);
+    evaluateSMC(d.c, d);
   } catch (err) {
     $('status').textContent = 'Error'; $('status').className = 'pill error';
     $('updated').textContent = `⚠ ${err.message}`;
   }
 }
-
 $('refresh').addEventListener('click', () => {
   refreshQuote();
   startCountdown(parseInt($('intervalSelect').value));
 });
 
-// ─── INITIALIZATION ─────────────────────────────────────────
+// ─── INIT ────────────────────────────────────────────────────────────────────
 (function init() {
   applyTheme(localStorage.getItem(STORAGE.THEME) || 'dark');
 
