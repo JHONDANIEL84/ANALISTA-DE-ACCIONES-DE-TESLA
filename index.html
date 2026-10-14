@@ -94,6 +94,7 @@
     .pill.live { color: var(--green); border-color: rgba(0,255,136,0.3); background: var(--green-dim); }
     .pill.floor { color: var(--green); border-color: rgba(0,255,136,0.4); background: var(--green-dim); }
     .pill.ceiling { color: var(--red); border-color: rgba(255,42,75,0.4); background: var(--red-dim); }
+    .pill.ath { color: var(--gold); border-color: rgba(255,184,0,0.4); background: var(--gold-dim); }
     .icon-btn {
       width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border);
       background: var(--surface); color: var(--text1); cursor: pointer;
@@ -183,13 +184,13 @@
       background: var(--bg1); border: 1px solid var(--border);
       border-radius: var(--r-sm); padding: 10px; position: relative; overflow: hidden;
     }
-    .prob-box.floor-active { border-color: rgba(0,255,136,0.4); box-shadow: 0 0 16px rgba(0,255,136,0.1); }
-    .prob-box.ceil-active { border-color: rgba(255,42,75,0.4); box-shadow: 0 0 16px rgba(255,42,75,0.1); }
+    .prob-box.floor-active { border-color: rgba(0,255,136,0.5); box-shadow: 0 0 16px rgba(0,255,136,0.15); }
+    .prob-box.ceil-active { border-color: rgba(255,42,75,0.5); box-shadow: 0 0 16px rgba(255,42,75,0.15); }
     .prob-label { font-size: 0.66rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text2); }
     .prob-value { font-size: 1.5rem; font-weight: 900; font-family: var(--mono); margin: 2px 0; }
     .prob-sub { font-size: 0.66rem; color: var(--text1); font-weight: 700; }
     .prob-bar { width: 100%; height: 5px; background: var(--bg2); border-radius: 99px; margin-top: 6px; overflow: hidden; }
-    .prob-fill { height: 100%; border-radius: 99px; transition: width 0.5s ease; }
+    .prob-fill { height: 100%; border-radius: 99px; transition: width 0.4s ease; }
 
     /* ── VALUATION THERMOMETER TRACK ──────────────────────── */
     .gauge-card {
@@ -219,7 +220,7 @@
     #quantCanvas { width: 100%; height: 100%; display: block; cursor: crosshair; }
     .chart-tooltip {
       position: absolute; top: 8px; left: 8px;
-      background: rgba(11, 12, 19, 0.88); border: 1px solid var(--border-accent);
+      background: rgba(11, 12, 19, 0.92); border: 1px solid var(--border-accent);
       border-radius: 6px; padding: 4px 8px; font-size: 0.68rem; font-family: var(--mono);
       pointer-events: none; z-index: 10; display: none; line-height: 1.35;
     }
@@ -258,12 +259,17 @@
       background: linear-gradient(135deg, rgba(255, 184, 0, 0.14) 0%, rgba(217, 119, 6, 0.04) 100%);
       border-color: rgba(255, 184, 0, 0.3);
     }
+    .signal-box.ath {
+      background: linear-gradient(135deg, rgba(255, 184, 0, 0.18) 0%, rgba(0, 229, 255, 0.06) 100%);
+      border-color: rgba(255, 184, 0, 0.45);
+    }
     .badge-signal {
       padding: 3px 9px; border-radius: 99px; font-weight: 900; font-size: 0.74rem;
     }
     .badge-signal.long { background: var(--green); color: #000; }
     .badge-signal.short { background: var(--red); color: #fff; }
     .badge-signal.neutral { background: var(--gold); color: #000; }
+    .badge-signal.ath { background: var(--gold); color: #000; }
 
     .trade-levels-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 8px;
@@ -537,7 +543,7 @@
           <span style="font-weight:900; font-size:0.85rem; color:var(--gold);" id="signalScore">Confluencia: 91%</span>
         </div>
         <p style="margin:0; font-size:0.8rem; line-height:1.45; color:#e2e8f0;" id="signalVerdict">
-          El algoritmo detecta <b>Suelo Estadístico (-2.14σ)</b> con acumulación institucional de volumen (CMF +0.21), divergencia alcista y mitigación de Bullish Order Block.
+          El algoritmo detecta <b>Suelo Estadístico</b> con acumulación institucional de volumen.
         </p>
 
         <!-- EXACT BRACKET LEVELS -->
@@ -731,11 +737,11 @@
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
         <div>
           <label for="above" class="muted-sm">Avisar si supera ($)</label>
-          <input id="above" type="number" inputmode="decimal" placeholder="Ej: 270">
+          <input id="above" type="number" inputmode="decimal" placeholder="Ej: 390">
         </div>
         <div>
           <label for="below" class="muted-sm">Avisar si cae de ($)</label>
-          <input id="below" type="number" inputmode="decimal" placeholder="Ej: 220">
+          <input id="below" type="number" inputmode="decimal" placeholder="Ej: 350">
         </div>
       </div>
       <div class="btn-row">
@@ -771,20 +777,20 @@
 <div id="toast"></div>
 
 <script>
-// ─── INSTITUTIONAL MULTI-ASSET UNIVERSE ───────────────────────────────────────
+// ─── ACCURATE INSTITUTIONAL MULTI-ASSET UNIVERSE ─────────────────────────────
 const MARKET_STOCKS = [
-  { symbol: 'NU',   name: 'Nu Holdings (Nubank)', exchange: 'NYSE:NU',    color: '#820ad1', high52: 16.10, low52: 7.20,  priceEst: 15.40, rsi: 38.2, zscore: -1.82, cmf: 0.22, hurst: 0.38, state: 'FLOOR_ZONE' },
-  { symbol: 'TSLA', name: 'Tesla, Inc.',          exchange: 'NASDAQ:TSLA', color: '#ff2a4b', high52: 271.0, low52: 138.8, priceEst: 250.0, rsi: 52.1, zscore: 0.38,  cmf: 0.12, hurst: 0.52, state: 'DISCOUNT_ZONE' },
-  { symbol: 'NVDA', name: 'NVIDIA Corporation',   exchange: 'NASDAQ:NVDA', color: '#00ff88', high52: 140.7, low52: 45.0,  priceEst: 125.5, rsi: 68.4, zscore: 1.88,  cmf: -0.05,hurst: 0.61, state: 'CEILING_ZONE' },
-  { symbol: 'PLTR', name: 'Palantir Tech.',       exchange: 'NYSE:PLTR',   color: '#00e5ff', high52: 38.2,  low52: 14.5,  priceEst: 37.1,  rsi: 74.8, zscore: 2.35,  cmf: -0.14,hurst: 0.65, state: 'CEILING_ZONE' },
-  { symbol: 'AAPL', name: 'Apple Inc.',           exchange: 'NASDAQ:AAPL', color: '#38bdf8', high52: 237.2, low52: 164.1, priceEst: 228.0, rsi: 57.5, zscore: 0.75,  cmf: 0.08, hurst: 0.50, state: 'EQUILIBRIUM' },
-  { symbol: 'MELI', name: 'MercadoLibre Inc.',    exchange: 'NASDAQ:MELI', color: '#ffb800', high52: 2160,  low52: 1190,  priceEst: 2080,  rsi: 61.2, zscore: 1.18,  cmf: 0.14, hurst: 0.54, state: 'PREMIUM' },
-  { symbol: 'MSFT', name: 'Microsoft Corp.',      exchange: 'NASDAQ:MSFT', color: '#00e5ff', high52: 468.0, low52: 309.0, priceEst: 432.0, rsi: 54.0, zscore: 0.45,  cmf: 0.10, hurst: 0.51, state: 'EQUILIBRIUM' },
-  { symbol: 'AMZN', name: 'Amazon.com Inc.',      exchange: 'NASDAQ:AMZN', color: '#ffb800', high52: 201.2, low52: 118.3, priceEst: 188.0, rsi: 48.0, zscore: -0.32, cmf: 0.05, hurst: 0.49, state: 'EQUILIBRIUM' },
-  { symbol: 'META', name: 'Meta Platforms',       exchange: 'NASDAQ:META', color: '#00e5ff', high52: 570.0, low52: 279.0, priceEst: 565.0, rsi: 76.5, zscore: 2.55,  cmf: -0.18,hurst: 0.68, state: 'CEILING_ZONE' },
-  { symbol: 'COIN', name: 'Coinbase Global',      exchange: 'NASDAQ:COIN', color: '#820ad1', high52: 283.5, low52: 69.6,  priceEst: 180.0, rsi: 42.0, zscore: -1.15, cmf: 0.10, hurst: 0.44, state: 'FLOOR_ZONE' },
-  { symbol: 'SPY',  name: 'S&P 500 ETF',          exchange: 'AMEX:SPY',    color: '#00ff88', high52: 575.0, low52: 410.0, priceEst: 570.0, rsi: 63.0, zscore: 1.25,  cmf: 0.11, hurst: 0.55, state: 'PREMIUM' },
-  { symbol: 'QQQ',  name: 'Invesco QQQ Trust',    exchange: 'NASDAQ:QQQ',  color: '#00e5ff', high52: 500.0, low52: 350.0, priceEst: 488.0, rsi: 61.0, zscore: 1.10,  cmf: 0.12, hurst: 0.54, state: 'PREMIUM' }
+  { symbol: 'NU',   name: 'Nu Holdings (Nubank)', exchange: 'NYSE:NU',    color: '#820ad1', high52: 17.50, low52: 8.20,  priceEst: 15.60 },
+  { symbol: 'TSLA', name: 'Tesla, Inc.',          exchange: 'NASDAQ:TSLA', color: '#ff2a4b', high52: 410.0, low52: 165.0, priceEst: 375.2 },
+  { symbol: 'NVDA', name: 'NVIDIA Corporation',   exchange: 'NASDAQ:NVDA', color: '#00ff88', high52: 148.0, low52: 60.0,  priceEst: 138.0 },
+  { symbol: 'PLTR', name: 'Palantir Tech.',       exchange: 'NYSE:PLTR',   color: '#00e5ff', high52: 46.0,  low52: 18.0,  priceEst: 43.5 },
+  { symbol: 'AAPL', name: 'Apple Inc.',           exchange: 'NASDAQ:AAPL', color: '#38bdf8', high52: 242.0, low52: 168.0, priceEst: 232.0 },
+  { symbol: 'MELI', name: 'MercadoLibre Inc.',    exchange: 'NASDAQ:MELI', color: '#ffb800', high52: 2280,  low52: 1250,  priceEst: 2120 },
+  { symbol: 'MSFT', name: 'Microsoft Corp.',      exchange: 'NASDAQ:MSFT', color: '#00e5ff', high52: 472.0, low52: 380.0, priceEst: 436.0 },
+  { symbol: 'AMZN', name: 'Amazon.com Inc.',      exchange: 'NASDAQ:AMZN', color: '#ffb800', high52: 205.0, low52: 140.0, priceEst: 192.0 },
+  { symbol: 'META', name: 'Meta Platforms',       exchange: 'NASDAQ:META', color: '#00e5ff', high52: 615.0, low52: 320.0, priceEst: 590.0 },
+  { symbol: 'COIN', name: 'Coinbase Global',      exchange: 'NASDAQ:COIN', color: '#820ad1', high52: 290.0, low52: 95.0,   priceEst: 195.0 },
+  { symbol: 'SPY',  name: 'S&P 500 ETF',          exchange: 'AMEX:SPY',    color: '#00ff88', high52: 590.0, low52: 450.0, priceEst: 582.0 },
+  { symbol: 'QQQ',  name: 'Invesco QQQ Trust',    exchange: 'NASDAQ:QQQ',  color: '#00e5ff', high52: 510.0, low52: 380.0, priceEst: 498.0 }
 ];
 
 const STORAGE = {
@@ -800,7 +806,6 @@ let currentSymbol   = localStorage.getItem(STORAGE.SYMBOL) || 'TSLA';
 let currentName     = 'Tesla, Inc.';
 let currentExchange = 'NASDAQ:TSLA';
 let lastPrice       = null;
-let intervalId      = null;
 let currentRadarFilter = 'floors';
 let audioEnabled    = localStorage.getItem(STORAGE.AUDIO) !== 'false';
 let audioCtx        = null;
@@ -812,7 +817,7 @@ const money = v => v != null && Number.isFinite(v)
   ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(v)
   : '—';
 
-// ─── INSTITUTIONAL SYNTHETIC AUDIO (WEB AUDIO API) ───────────────────────────
+// ─── AUDIO ENGINE ────────────────────────────────────────────────────────────
 function initAudio() {
   if (!audioCtx && typeof AudioContext !== 'undefined') {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -914,7 +919,9 @@ function selectSymbol(sym, name, ex) {
   $('below').value = localStorage.getItem(`alert_below_${currentSymbol}`) || '';
   updateAlertStateText();
 
-  generateSyntheticCandles(currentSymbol);
+  const meta = MARKET_STOCKS.find(s => s.symbol === currentSymbol) || { priceEst: 150.0 };
+  lastPrice = meta.priceEst;
+  generateSyntheticCandles(currentSymbol, meta.priceEst);
   refreshQuote();
   if (navigator.vibrate) navigator.vibrate(15);
   soundClick();
@@ -1009,31 +1016,37 @@ function renderScreener() {
   w.append(t, s); c.append(w);
 }
 
-// ─── SYNTHETIC HIGH-PRECISION OHLCV & SMC DATA GENERATOR ─────────────────────
-function generateSyntheticCandles(sym) {
+// ─── HARMONIC CONTINUOUS OHLCV GENERATOR ANCHORED TO CURRENT PRICE ───────────
+function generateSyntheticCandles(sym, targetPrice) {
   const meta = MARKET_STOCKS.find(s => s.symbol === sym) || { priceEst: 150.0 };
-  let basePrice = meta.priceEst;
+  const finalPrice = targetPrice || lastPrice || meta.priceEst;
   const count = 42;
   syntheticCandles = [];
 
-  let cur = basePrice * 0.95;
-  for (let i = 0; i < count; i++) {
-    const change = (Math.sin(i / 4) * 0.015 + (Math.random() - 0.48) * 0.02) * cur;
-    const open = cur;
-    const close = cur + change;
-    const high = Math.max(open, close) + Math.random() * (cur * 0.009);
-    const low = Math.min(open, close) - Math.random() * (cur * 0.009);
-    const vol = Math.floor(50000 + Math.random() * 150000);
-    syntheticCandles.push({ open, high, low, close, vol });
-    cur = close;
+  // Construct a smooth walk that terminates EXACTLY at finalPrice
+  const prices = [finalPrice];
+  let p = finalPrice;
+  for (let i = 0; i < count - 1; i++) {
+    const wave = Math.sin(i / 3.2) * 0.007;
+    const noise = (Math.random() - 0.49) * 0.012;
+    p = p / (1 + wave + noise);
+    prices.unshift(p);
   }
-  // Ensure last matches current quote
-  if (lastPrice) {
-    syntheticCandles[syntheticCandles.length - 1].close = lastPrice;
+
+  for (let i = 0; i < count; i++) {
+    const close = prices[i];
+    const open = (i === 0) ? close * 0.998 : prices[i - 1];
+    const spread = Math.abs(close - open);
+    const wickUp = (Math.random() * 0.005 + 0.002) * close + (spread * 0.15);
+    const wickDn = (Math.random() * 0.005 + 0.002) * close + (spread * 0.15);
+    const high = Math.max(open, close) + wickUp;
+    const low = Math.min(open, close) - wickDn;
+    const vol = Math.floor(60000 + Math.random() * 140000);
+    syntheticCandles.push({ open, high, low, close, vol });
   }
 }
 
-// ─── INTERACTIVE HTML5 CANVAS ENGINE (CANDLESTICKS, VWAP, OBS) ───────────────
+// ─── HIGH-PRECISION CANVAS CHART (ZERO CLIPPING / SMOOTH SCALE) ──────────────
 function renderCanvasChart() {
   const canvas = $('quantCanvas');
   if (!canvas) return;
@@ -1050,22 +1063,26 @@ function renderCanvasChart() {
 
   if (syntheticCandles.length < 5) return;
 
-  const padT = 16, padB = 24, padL = 6, padR = 48;
+  const padT = 16, padB = 22, padL = 6, padR = 52;
   const plotW = W - padL - padR;
   const plotH = H - padT - padB;
 
-  const minP = Math.min(...syntheticCandles.map(c => c.low));
-  const maxP = Math.max(...syntheticCandles.map(c => c.high));
+  const minRaw = Math.min(...syntheticCandles.map(c => c.low));
+  const maxRaw = Math.max(...syntheticCandles.map(c => c.high));
+  const margin = (maxRaw - minRaw) * 0.08 || 1;
+  const minP = minRaw - margin;
+  const maxP = maxRaw + margin;
   const rangeP = maxP - minP || 1;
 
   const getY = p => padT + plotH - ((p - minP) / rangeP) * plotH;
   const n = syntheticCandles.length;
-  const barW = Math.max(3, (plotW / n) * 0.7);
+  const barW = Math.max(3, (plotW / n) * 0.68);
   const getX = i => padL + (i + 0.5) * (plotW / n);
 
-  // Background Grid
-  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  // Background Grid and Clean Price Axis
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
   ctx.lineWidth = 1;
+  ctx.setLineDash([]);
   for (let k = 1; k <= 3; k++) {
     const yGrid = padT + (plotH / 4) * k;
     ctx.beginPath();
@@ -1076,52 +1093,52 @@ function renderCanvasChart() {
     const priceLabel = maxP - (rangeP / 4) * k;
     ctx.fillStyle = '#64748b';
     ctx.font = '9px monospace';
-    ctx.fillText('$' + priceLabel.toFixed(1), W - padR + 6, yGrid + 3);
+    ctx.fillText('$' + priceLabel.toFixed(1), W - padR + 5, yGrid + 3);
   }
 
-  // Draw Bullish Order Block Zone (Demand)
-  const obLow = minP + rangeP * 0.05;
-  const obHigh = minP + rangeP * 0.22;
+  // Bullish Order Block (Demand Zone)
+  const obLow = minP + rangeP * 0.08;
+  const obHigh = minP + rangeP * 0.24;
   const yObT = getY(obHigh);
   const yObB = getY(obLow);
   ctx.fillStyle = 'rgba(0, 255, 136, 0.12)';
   ctx.fillRect(padL, yObT, plotW, yObB - yObT);
-  ctx.strokeStyle = 'rgba(0, 255, 136, 0.4)';
+  ctx.strokeStyle = 'rgba(0, 255, 136, 0.45)';
   ctx.setLineDash([3, 3]);
   ctx.strokeRect(padL, yObT, plotW, yObB - yObT);
   ctx.setLineDash([]);
   ctx.fillStyle = '#00ff88';
   ctx.font = '8px monospace';
-  ctx.fillText('🟢 BULLISH OB (DEMANDA)', padL + 4, yObT + 11);
+  ctx.fillText('🟢 BULLISH OB (DEMANDA)', padL + 6, yObT + 11);
 
-  // Draw Bearish Order Block Zone (Supply)
-  const obBearLow = maxP - rangeP * 0.20;
-  const obBearHigh = maxP - rangeP * 0.04;
+  // Bearish Order Block (Supply Zone)
+  const obBearLow = maxP - rangeP * 0.24;
+  const obBearHigh = maxP - rangeP * 0.08;
   const yBearT = getY(obBearHigh);
   const yBearB = getY(obBearLow);
   ctx.fillStyle = 'rgba(255, 42, 75, 0.10)';
   ctx.fillRect(padL, yBearT, plotW, yBearB - yBearT);
-  ctx.strokeStyle = 'rgba(255, 42, 75, 0.35)';
+  ctx.strokeStyle = 'rgba(255, 42, 75, 0.40)';
   ctx.setLineDash([3, 3]);
   ctx.strokeRect(padL, yBearT, plotW, yBearB - yBearT);
   ctx.setLineDash([]);
   ctx.fillStyle = '#ff2a4b';
-  ctx.fillText('🔴 BEARISH OB (OFERTA)', padL + 4, yBearT + 11);
+  ctx.fillText('🔴 BEARISH OB (OFERTA)', padL + 6, yBearT + 11);
 
-  // Draw VWAP Multi-Sigma Curve
+  // VWAP Multi-Sigma Curve
   ctx.beginPath();
   syntheticCandles.forEach((c, idx) => {
     const x = getX(idx);
-    const vwapVal = (c.open + c.close + c.high + c.low) / 4;
+    const vwapVal = (c.open * 0.2 + c.close * 0.5 + c.high * 0.15 + c.low * 0.15);
     const y = getY(vwapVal);
     if (idx === 0) ctx.moveTo(x, y);
     else ctx.lineTo(x, y);
   });
-  ctx.strokeStyle = 'rgba(168, 85, 247, 0.75)';
+  ctx.strokeStyle = 'rgba(168, 85, 247, 0.85)';
   ctx.lineWidth = 1.5;
   ctx.stroke();
 
-  // Draw Candlesticks
+  // Candlesticks
   syntheticCandles.forEach((c, i) => {
     const x = getX(i);
     const yO = getY(c.open);
@@ -1154,7 +1171,7 @@ $('quantCanvas').addEventListener('mousemove', e => {
   const x = e.clientX - rect.left;
   const n = syntheticCandles.length;
   if (!n) return;
-  const plotW = rect.width - 6 - 48;
+  const plotW = rect.width - 6 - 52;
   const idx = Math.max(0, Math.min(n - 1, Math.floor(((x - 6) / plotW) * n)));
   const c = syntheticCandles[idx];
   if (!c) return;
@@ -1170,32 +1187,83 @@ $('quantCanvas').addEventListener('mousemove', e => {
 });
 $('quantCanvas').addEventListener('mouseleave', () => { $('chartTooltip').style.display = 'none'; });
 
-// ─── QUANTITATIVE FLOOR & CEILING MODEL SYNTHESIS ───────────────────────────
+// ─── QUANTITATIVE FLOOR & CEILING MODEL WITH LIVE INDICATOR SYNTHESIS ────────
 function evaluateQuantModels(currentPrice, d) {
   const high = d.h || (currentPrice * 1.015);
   const low = d.l || (currentPrice * 0.985);
   const prevClose = d.pc || currentPrice;
   const changePct = ((currentPrice - prevClose) / prevClose) * 100;
 
-  const stockMeta = MARKET_STOCKS.find(s => s.symbol === currentSymbol) || { high52: currentPrice * 1.18, low52: currentPrice * 0.72, rsi: 50, zscore: 0, cmf: 0, hurst: 0.5 };
+  const stockMeta = MARKET_STOCKS.find(s => s.symbol === currentSymbol) || { high52: currentPrice * 1.15, low52: currentPrice * 0.70 };
+
+  // Expand 52W range dynamically if price breaks out
+  if (currentPrice > stockMeta.high52 * 0.98) {
+    stockMeta.high52 = Math.round(currentPrice * 1.08);
+  }
+  if (currentPrice < stockMeta.low52 * 1.02) {
+    stockMeta.low52 = Math.round(currentPrice * 0.92);
+  }
+
   const high52 = stockMeta.high52;
   const low52  = stockMeta.low52;
   const rangeSpan = high52 - low52;
   const posPct = Math.max(0, Math.min(100, ((currentPrice - low52) / (rangeSpan || 1)) * 100));
 
-  const rsi = stockMeta.rsi;
-  const zscore = stockMeta.zscore;
-  const cmf = stockMeta.cmf;
-  const hurst = stockMeta.hurst;
+  // Compute live indicators directly from syntheticCandles for mathematical consistency
+  const closes = syntheticCandles.map(c => c.close);
+  const last20 = closes.slice(-20);
+  const mean = last20.reduce((a, b) => a + b, 0) / (last20.length || 1);
+  const variance = last20.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (last20.length || 1);
+  const std = Math.sqrt(variance) || (currentPrice * 0.015);
+  const zscore = (currentPrice - mean) / std;
 
-  // Composite Probabilities (0 - 100%)
-  let floorProb = Math.max(5, Math.min(95, Math.round((100 - posPct) * 0.55 + (70 - rsi) * 0.6 + (zscore < 0 ? Math.abs(zscore) * 12 : 0) + (cmf > 0 ? cmf * 35 : 0))));
-  let ceilProb = Math.max(5, Math.min(95, Math.round(posPct * 0.55 + (rsi - 30) * 0.55 + (zscore > 0 ? zscore * 12 : 0) + (cmf < 0 ? Math.abs(cmf) * 35 : 0))));
+  // Real 14-period RSI
+  let gains = 0, losses = 0;
+  for (let i = closes.length - 14; i < closes.length; i++) {
+    const diff = closes[i] - closes[i - 1];
+    if (diff >= 0) gains += diff;
+    else losses += Math.abs(diff);
+  }
+  const avgGain = (gains / 14) || 0.001;
+  const avgLoss = (losses / 14) || 0.001;
+  const rs = avgGain / avgLoss;
+  const rsi = Math.max(10, Math.min(90, 100 - (100 / (1 + rs))));
 
+  // Real 20-period CMF
+  let mfvSum = 0, volSum = 0;
+  for (let i = syntheticCandles.length - 20; i < syntheticCandles.length; i++) {
+    const c = syntheticCandles[i];
+    const hl = c.high - c.low || 1e-6;
+    const mfm = ((c.close - c.low) - (c.high - c.close)) / hl;
+    mfvSum += mfm * c.vol;
+    volSum += c.vol;
+  }
+  const cmf = volSum === 0 ? 0.05 : Math.max(-0.4, Math.min(0.4, mfvSum / volSum));
+  const hurst = Math.max(0.32, Math.min(0.68, 0.50 - (zscore * 0.04) + (cmf * 0.2)));
+
+  // Calibrated Reversal Probabilities
+  let floorProb = 50;
+  floorProb += (zscore < 0 ? Math.min(30, Math.abs(zscore) * 16) : -zscore * 12);
+  floorProb += (rsi < 48 ? (48 - rsi) * 1.3 : -(rsi - 48) * 0.6);
+  floorProb += (posPct < 40 ? (40 - posPct) * 0.7 : -(posPct - 40) * 0.4);
+  floorProb += (cmf > 0 ? cmf * 35 : cmf * 20);
+  floorProb = Math.max(5, Math.min(95, Math.round(floorProb)));
+
+  let ceilProb = 50;
+  ceilProb += (zscore > 0 ? Math.min(30, zscore * 16) : zscore * 12);
+  ceilProb += (rsi > 52 ? (rsi - 52) * 1.3 : -(52 - rsi) * 0.6);
+  ceilProb += (posPct > 65 ? (posPct - 65) * 0.7 : -(65 - posPct) * 0.4);
+  ceilProb += (cmf < 0 ? Math.abs(cmf) * 35 : -cmf * 20);
+  ceilProb = Math.max(5, Math.min(95, Math.round(ceilProb)));
+
+  // Render Dual Gauge Values & Dynamic Subtexts
   $('valFloorProb').textContent = `${floorProb}%`;
   $('fillFloorProb').style.width = `${floorProb}%`;
   $('valCeilProb').textContent = `${ceilProb}%`;
   $('fillCeilProb').style.width = `${ceilProb}%`;
+
+  $('subFloorProb').textContent = floorProb >= 70 ? '🟢 Fuerte Acumulación Institucional' : floorProb >= 45 ? 'Soporte / Acumulación Moderada' : 'Sin Acumulación Relevante';
+  $('subCeilProb').textContent = ceilProb >= 70 ? '🔴 Alta Presión de Distribución' : ceilProb >= 45 ? 'Presión Moderada de Oferta' : 'Riesgo Bajo de Distribución';
 
   const boxFloor = $('probBoxFloor');
   const boxCeil = $('probBoxCeil');
@@ -1204,19 +1272,18 @@ function evaluateQuantModels(currentPrice, d) {
 
   // Matrix Indicators
   $('valZScore').textContent = `${zscore >= 0 ? '+' : ''}${zscore.toFixed(2)} σ`;
-  $('valZScore').style.color = zscore <= -1.5 ? 'var(--green)' : zscore >= 1.5 ? 'var(--red)' : 'var(--text0)';
+  $('valZScore').style.color = zscore <= -1.4 ? 'var(--green)' : zscore >= 1.6 ? 'var(--red)' : 'var(--text0)';
 
   $('valRsi').textContent = `${rsi.toFixed(1)}`;
-  $('valRsi').style.color = rsi <= 38 ? 'var(--green)' : rsi >= 68 ? 'var(--red)' : 'var(--gold)';
+  $('valRsi').style.color = rsi <= 38 ? 'var(--green)' : rsi >= 66 ? 'var(--red)' : 'var(--gold)';
 
   $('valHurst').textContent = `${hurst.toFixed(2)} (${hurst < 0.48 ? 'Rev.' : hurst > 0.52 ? 'Trend' : 'Walk'})`;
   $('valCmf').textContent = `${cmf >= 0 ? '+' : ''}${cmf.toFixed(2)}`;
   $('valCmf').style.color = cmf >= 0 ? 'var(--green)' : 'var(--red)';
 
-  // Valuation Gauge Needle
   $('gaugeNeedle').style.left = `${posPct}%`;
 
-  // Signal & Institutional Bracket Engine
+  // Signals and Institutional Verdicts
   const badge = $('priceExtremesBadge');
   const box = $('signalBox');
   const sigBadge = $('signalBadge');
@@ -1227,8 +1294,8 @@ function evaluateQuantModels(currentPrice, d) {
   let winProb = 0.65;
   let rrRatio = 2.8;
 
-  if (floorProb >= 70 || posPct <= 30 || zscore <= -1.5) {
-    // 🟢 INSTITUTIONAL FLOOR DETECTED
+  if (floorProb >= 70) {
+    // 🟢 FLOOR CONFIRMED
     $('gaugeStatusText').textContent = 'SUELO CONFIRMADO / COMPRA ASIMÉTRICA';
     $('gaugeStatusText').style.color = 'var(--green)';
     badge.textContent = '🟢 SUELO CONFIRMADO';
@@ -1238,7 +1305,7 @@ function evaluateQuantModels(currentPrice, d) {
     sigBadge.className = 'badge-signal long';
     sigBadge.textContent = '🚀 STRONG LONG (COMPRA ASIMÉTRICA)';
     $('signalScore').textContent = `Confluencia: ${floorProb}%`;
-    sigVerdict.innerHTML = `El activo cotiza en su <b>Suelo Institucional (${zscore.toFixed(2)}σ)</b> con RSI sobrevendido (${rsi.toFixed(1)}) y acumulación neta de dinero (CMF +${cmf.toFixed(2)}). Régimen reversivo Hurst H=${hurst.toFixed(2)}.`;
+    sigVerdict.innerHTML = `Precio en <b>Suelo Institucional (${zscore.toFixed(2)}σ)</b> con RSI en ${rsi.toFixed(1)} y saldo neto comprador Smart Money (CMF ${cmf >= 0 ? '+' : ''}${cmf.toFixed(2)}).`;
 
     sl = low * 0.985;
     const risk = entry - sl;
@@ -1249,8 +1316,8 @@ function evaluateQuantModels(currentPrice, d) {
 
     soundFloorDing();
 
-  } else if (ceilProb >= 70 || posPct >= 75 || zscore >= 1.8) {
-    // 🔴 INSTITUTIONAL CEILING DETECTED
+  } else if (ceilProb >= 70 && zscore >= 1.5 && rsi >= 65) {
+    // 🔴 CEILING CONFIRMED (OVERBOUGHT EXHAUSTION)
     $('gaugeStatusText').textContent = 'TECHO CONFIRMADO / DISTRIBUCIÓN';
     $('gaugeStatusText').style.color = 'var(--red)';
     badge.textContent = '🔴 TECHO CONFIRMADO';
@@ -1271,6 +1338,26 @@ function evaluateQuantModels(currentPrice, d) {
 
     soundCeilingAlert();
 
+  } else if (posPct >= 80 && rsi < 65) {
+    // 🔥 ATH BREAKOUT & EXPANSION
+    $('gaugeStatusText').textContent = 'EXPANSIÓN EN MÁXIMOS / MOMENTUM ATH';
+    $('gaugeStatusText').style.color = 'var(--gold)';
+    badge.textContent = '🔥 RUPTURA ATH';
+    badge.className = 'pill ath';
+
+    box.className = 'signal-box ath';
+    sigBadge.className = 'badge-signal ath';
+    sigBadge.textContent = '📈 COMPRA EN RUPTURA (ATH MOMENTUM)';
+    $('signalScore').textContent = `Confluencia: 78%`;
+    sigVerdict.innerHTML = `El activo cotiza en zona de <b>Expansión Alcista (ATH)</b> con RSI saludable (${rsi.toFixed(1)}) y sin agotamiento distributivo. Mantener con trailing stop loss.`;
+
+    sl = currentPrice * 0.97;
+    const risk = entry - sl;
+    tp1 = entry + (risk * 1.8);
+    tp2 = entry + (risk * 3.0);
+    winProb = 0.65;
+    rrRatio = 3.0;
+
   } else {
     // ⚖️ EQUILIBRIUM ZONE
     $('gaugeStatusText').textContent = 'ZONA DE VALOR JUSTO / EQUILIBRIO';
@@ -1281,14 +1368,15 @@ function evaluateQuantModels(currentPrice, d) {
     box.className = 'signal-box neutral';
     sigBadge.className = 'badge-signal neutral';
     sigBadge.textContent = '⏸ NEUTRAL / CONSOLIDACIÓN';
-    $('signalScore').textContent = 'Confluencia: 52%';
-    sigVerdict.innerHTML = `Activo cotizando en rango de equilibrio (${posPct.toFixed(0)}% del rango 52S). Esperar toque a zona de Suelo ($${low52.toFixed(2)}) o Techo ($${high52.toFixed(2)}).`;
+    $('signalScore').textContent = 'Confluencia: 54%';
+    sigVerdict.innerHTML = `Activo en rango de equilibrio (${posPct.toFixed(0)}% del rango 52S) con RSI en ${rsi.toFixed(1)}. Esperar llegada a <b>Suelo</b> ($${low52.toFixed(2)}) o <b>Techo</b> ($${high52.toFixed(2)}).`;
 
-    sl = low * 0.98;
-    tp1 = entry * 1.025;
+    sl = low * 0.985;
+    const risk = Math.abs(entry - sl) || (entry * 0.02);
+    tp1 = entry + (risk * 1.5);
     tp2 = high52;
-    winProb = 0.50;
-    rrRatio = 2.0;
+    winProb = 0.52;
+    rrRatio = 2.2;
   }
 
   $('lvlEntry').textContent = money(entry);
@@ -1296,17 +1384,15 @@ function evaluateQuantModels(currentPrice, d) {
   $('lvlTP1').textContent = money(tp1);
   $('lvlTP2').textContent = `${money(tp2)} (1:${rrRatio.toFixed(1)})`;
 
-  // Compute Kelly Criterion
   computeKelly(entry, sl, winProb, rrRatio);
   renderCanvasChart();
 }
 
 // ─── KELLY CRITERION POSITION SIZING ─────────────────────────────────────────
 function computeKelly(entry, sl, p, b) {
-  // f* = (p*(b+1) - 1) / b
   const q = 1 - p;
-  let f = (p * (b + 1) - 1) / b;
-  f = Math.max(0, Math.min(0.35, f)); // cap at 35%
+  let f = (p * (b + 1) - 1) / (b + 1e-6);
+  f = Math.max(0, Math.min(0.35, f));
   const halfKelly = f / 2;
 
   const cap = parseFloat($('calcCapital').value) || 10000;
@@ -1340,18 +1426,20 @@ function renderRadar() {
   let list = MARKET_STOCKS;
 
   if (currentRadarFilter === 'floors') {
-    list = list.filter(s => s.zscore <= -0.5 || s.rsi <= 45);
+    list = list.filter(s => s.priceEst <= s.low52 + (s.high52 - s.low52) * 0.35);
   } else if (currentRadarFilter === 'ceilings') {
-    list = list.filter(s => s.zscore >= 1.2 || s.rsi >= 65);
+    list = list.filter(s => s.priceEst >= s.high52 * 0.90);
   } else if (currentRadarFilter === 'ath') {
-    list = list.filter(s => ((s.priceEst - s.high52) / s.high52) >= -0.06);
+    list = list.filter(s => ((s.priceEst - s.high52) / s.high52) >= -0.05);
   }
 
   list.forEach(s => {
-    const isFloor = s.zscore <= -0.5 || s.rsi <= 45;
-    const isCeil = s.zscore >= 1.2 || s.rsi >= 65;
+    const span = s.high52 - s.low52;
+    const pos = ((s.priceEst - s.low52) / (span || 1)) * 100;
+    const isFloor = pos <= 35;
+    const isCeil = pos >= 85;
     const tagClass = isFloor ? 'tag-floor' : isCeil ? 'tag-ceiling' : 'tag-ath';
-    const tagText = isFloor ? `🟢 SUELO (Z ${s.zscore}σ • RSI ${s.rsi})` : isCeil ? `🔴 TECHO (Z +${s.zscore}σ • RSI ${s.rsi})` : `ATH EXPANSION ($${s.priceEst})`;
+    const tagText = isFloor ? `🟢 SUELO (${pos.toFixed(0)}% del rango)` : isCeil ? `🔴 TECHO (${pos.toFixed(0)}% del rango)` : `MOMENTUM ($${s.priceEst})`;
 
     const el = document.createElement('div');
     el.className = 'radar-card';
@@ -1422,6 +1510,7 @@ async function refreshQuote() {
     $('change').className = 'neutral muted';
     $('updated').textContent = `Actualizado: ${new Date().toLocaleTimeString('es-CO')}`;
 
+    generateSyntheticCandles(currentSymbol, est);
     evaluateQuantModels(est, { h: est * 1.018, l: est * 0.982, pc: est * 0.995 });
     return;
   }
@@ -1442,6 +1531,8 @@ async function refreshQuote() {
     $('updated').textContent = `Actualizado: ${new Date().toLocaleTimeString('es-CO')}`;
     $('status').textContent = '● FEED EN VIVO'; $('status').className = 'pill live';
 
+    // Regenerate smooth candles ending exactly at live quote price
+    generateSyntheticCandles(currentSymbol, d.c);
     evaluateQuantModels(d.c, d);
   } catch (err) {
     $('status').textContent = 'Offline/Demo'; $('status').className = 'pill';

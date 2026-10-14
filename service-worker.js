@@ -1,4 +1,4 @@
-const CACHE = 'stock-hedgefund-v6';
+const CACHE = 'stock-hedgefund-v7';
 const NETWORK_FIRST = ['/', '/index.html'];
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
 
