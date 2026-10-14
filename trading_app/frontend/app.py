@@ -284,8 +284,8 @@ with st.sidebar:
     # Timeframe Selector
     timeframe = st.selectbox(
         "Temporalidad (Timeframe):",
-        options=["1m", "5m", "15m", "1h", "1d"],
-        index=2
+        options=["1m", "5m", "15m", "30m", "1h", "4h", "1d", "1wk", "1mo", "1y", "ALL"],
+        index=6
     )
 
     st.markdown("---")

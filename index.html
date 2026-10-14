@@ -211,6 +211,38 @@
     }
     .gauge-labels { display: flex; justify-content: space-between; font-size: 0.65rem; font-weight: 800; }
 
+    /* ── TIMEFRAME SELECTOR BAR ───────────────────────────── */
+    .tf-selector-wrap {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 6px; margin: 10px 0 6px; flex-wrap: wrap;
+    }
+    .tf-header-info {
+      display: flex; align-items: center; gap: 6px; font-size: 0.68rem; font-weight: 800; color: var(--text2);
+    }
+    .tf-header-info .tf-badge {
+      padding: 2px 7px; border-radius: 4px; background: rgba(0, 229, 255, 0.12);
+      color: var(--cyan); font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.02em;
+    }
+    .tf-scroll {
+      display: flex; align-items: center; gap: 3px; overflow-x: auto;
+      scrollbar-width: none; padding-bottom: 2px;
+    }
+    .tf-scroll::-webkit-scrollbar { display: none; }
+    .tf-btn {
+      background: var(--bg1); border: 1px solid var(--border);
+      color: var(--text1); padding: 4px 7px; border-radius: 6px;
+      font-size: 0.70rem; font-weight: 800; font-family: var(--mono);
+      cursor: pointer; transition: all 0.15s ease; white-space: nowrap;
+    }
+    .tf-btn:hover { border-color: var(--cyan); color: var(--text0); }
+    .tf-btn.active {
+      background: rgba(0, 229, 255, 0.16); border-color: var(--cyan);
+      color: var(--cyan); box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+    }
+    .tf-sep {
+      width: 1px; height: 12px; background: var(--border); margin: 0 2px; display: inline-block;
+    }
+
     /* ── INTERACTIVE CANVAS CHART ─────────────────────────── */
     .chart-container {
       position: relative; width: 100%; height: 260px;
@@ -504,6 +536,34 @@
         </div>
       </div>
 
+      <!-- TIMEFRAME SELECTOR BAR (MINUTOS, HORAS, DÍAS, SEMANAS, MESES, AÑOS, TODO) -->
+      <div class="tf-selector-wrap">
+        <div class="tf-header-info">
+          <span>⏱ TEMPORALIDAD:</span>
+          <span class="tf-badge" id="activeTfBadge">1D · 1 Día (Daily Bias)</span>
+        </div>
+        <div class="tf-scroll" id="tfSelector">
+          <!-- Minutos -->
+          <button class="tf-btn" data-tf="1m" title="1 Minuto">1m</button>
+          <button class="tf-btn" data-tf="5m" title="5 Minutos">5m</button>
+          <button class="tf-btn" data-tf="15m" title="15 Minutos">15m</button>
+          <button class="tf-btn" data-tf="30m" title="30 Minutos">30m</button>
+          <span class="tf-sep"></span>
+          <!-- Horas -->
+          <button class="tf-btn" data-tf="1h" title="1 Hora">1h</button>
+          <button class="tf-btn" data-tf="4h" title="4 Horas">4h</button>
+          <span class="tf-sep"></span>
+          <!-- Días / Semanas -->
+          <button class="tf-btn active" data-tf="1D" title="1 Día">1D</button>
+          <button class="tf-btn" data-tf="1W" title="1 Semana">1S</button>
+          <span class="tf-sep"></span>
+          <!-- Meses / Años / Histórico Total -->
+          <button class="tf-btn" data-tf="1M" title="1 Mes">1M</button>
+          <button class="tf-btn" data-tf="1Y" title="1 Año">1A</button>
+          <button class="tf-btn" data-tf="ALL" title="Histórico Completo (ATL a ATH)">TODO</button>
+        </div>
+      </div>
+
       <!-- INTERACTIVE QUANTITATIVE CANDLESTICK & SMC CANVAS -->
       <div class="chart-container">
         <canvas id="quantCanvas"></canvas>
@@ -607,6 +667,28 @@
     <section class="card">
       <div class="card-header">
         <span class="card-title" id="tvChartTitle">Gráfico Avanzado TradingView</span>
+      </div>
+      <div class="tf-selector-wrap" style="margin-bottom:8px;">
+        <div class="tf-header-info">
+          <span>📈 INTERVALO:</span>
+          <span class="tf-badge" id="tvActiveTfBadge">1D · 1 Día</span>
+        </div>
+        <div class="tf-scroll" id="tvTfSelector">
+          <button class="tf-btn" data-tf="1m">1m</button>
+          <button class="tf-btn" data-tf="5m">5m</button>
+          <button class="tf-btn" data-tf="15m">15m</button>
+          <button class="tf-btn" data-tf="30m">30m</button>
+          <span class="tf-sep"></span>
+          <button class="tf-btn" data-tf="1h">1h</button>
+          <button class="tf-btn" data-tf="4h">4h</button>
+          <span class="tf-sep"></span>
+          <button class="tf-btn active" data-tf="1D">1D</button>
+          <button class="tf-btn" data-tf="1W">1S</button>
+          <span class="tf-sep"></span>
+          <button class="tf-btn" data-tf="1M">1M</button>
+          <button class="tf-btn" data-tf="1Y">1A</button>
+          <button class="tf-btn" data-tf="ALL">TODO</button>
+        </div>
       </div>
       <div id="chart"></div>
     </section>
@@ -779,37 +861,120 @@
 <script>
 // ─── ACCURATE INSTITUTIONAL MULTI-ASSET UNIVERSE ─────────────────────────────
 const MARKET_STOCKS = [
-  { symbol: 'NU',   name: 'Nu Holdings (Nubank)', exchange: 'NYSE:NU',    color: '#820ad1', high52: 17.50, low52: 8.20,  priceEst: 15.60 },
-  { symbol: 'TSLA', name: 'Tesla, Inc.',          exchange: 'NASDAQ:TSLA', color: '#ff2a4b', high52: 410.0, low52: 165.0, priceEst: 375.2 },
-  { symbol: 'NVDA', name: 'NVIDIA Corporation',   exchange: 'NASDAQ:NVDA', color: '#00ff88', high52: 148.0, low52: 60.0,  priceEst: 138.0 },
-  { symbol: 'PLTR', name: 'Palantir Tech.',       exchange: 'NYSE:PLTR',   color: '#00e5ff', high52: 46.0,  low52: 18.0,  priceEst: 43.5 },
-  { symbol: 'AAPL', name: 'Apple Inc.',           exchange: 'NASDAQ:AAPL', color: '#38bdf8', high52: 242.0, low52: 168.0, priceEst: 232.0 },
-  { symbol: 'MELI', name: 'MercadoLibre Inc.',    exchange: 'NASDAQ:MELI', color: '#ffb800', high52: 2280,  low52: 1250,  priceEst: 2120 },
-  { symbol: 'MSFT', name: 'Microsoft Corp.',      exchange: 'NASDAQ:MSFT', color: '#00e5ff', high52: 472.0, low52: 380.0, priceEst: 436.0 },
-  { symbol: 'AMZN', name: 'Amazon.com Inc.',      exchange: 'NASDAQ:AMZN', color: '#ffb800', high52: 205.0, low52: 140.0, priceEst: 192.0 },
-  { symbol: 'META', name: 'Meta Platforms',       exchange: 'NASDAQ:META', color: '#00e5ff', high52: 615.0, low52: 320.0, priceEst: 590.0 },
-  { symbol: 'COIN', name: 'Coinbase Global',      exchange: 'NASDAQ:COIN', color: '#820ad1', high52: 290.0, low52: 95.0,   priceEst: 195.0 },
-  { symbol: 'SPY',  name: 'S&P 500 ETF',          exchange: 'AMEX:SPY',    color: '#00ff88', high52: 590.0, low52: 450.0, priceEst: 582.0 },
-  { symbol: 'QQQ',  name: 'Invesco QQQ Trust',    exchange: 'NASDAQ:QQQ',  color: '#00e5ff', high52: 510.0, low52: 380.0, priceEst: 498.0 }
+  { symbol: 'NU',   name: 'Nu Holdings (Nubank)', exchange: 'NYSE:NU',    color: '#820ad1', high52: 17.50, low52: 8.20,  priceEst: 15.60, ath: 16.28, atl: 3.25 },
+  { symbol: 'TSLA', name: 'Tesla, Inc.',          exchange: 'NASDAQ:TSLA', color: '#ff2a4b', high52: 410.0, low52: 165.0, priceEst: 375.2, ath: 414.50, atl: 1.05 },
+  { symbol: 'NVDA', name: 'NVIDIA Corporation',   exchange: 'NASDAQ:NVDA', color: '#00ff88', high52: 148.0, low52: 60.0,  priceEst: 138.0, ath: 149.77, atl: 0.35 },
+  { symbol: 'PLTR', name: 'Palantir Tech.',       exchange: 'NYSE:PLTR',   color: '#00e5ff', high52: 46.0,  low52: 18.0,  priceEst: 43.5,  ath: 45.00,  atl: 6.00 },
+  { symbol: 'AAPL', name: 'Apple Inc.',           exchange: 'NASDAQ:AAPL', color: '#38bdf8', high52: 242.0, low52: 168.0, priceEst: 232.0, ath: 237.23, atl: 0.05 },
+  { symbol: 'MELI', name: 'MercadoLibre Inc.',    exchange: 'NASDAQ:MELI', color: '#ffb800', high52: 2280,  low52: 1250,  priceEst: 2120,  ath: 2160.0, atl: 8.00 },
+  { symbol: 'MSFT', name: 'Microsoft Corp.',      exchange: 'NASDAQ:MSFT', color: '#00e5ff', high52: 472.0, low52: 380.0, priceEst: 436.0, ath: 468.35, atl: 0.08 },
+  { symbol: 'AMZN', name: 'Amazon.com Inc.',      exchange: 'NASDAQ:AMZN', color: '#ffb800', high52: 205.0, low52: 140.0, priceEst: 192.0, ath: 201.20, atl: 1.30 },
+  { symbol: 'META', name: 'Meta Platforms',       exchange: 'NASDAQ:META', color: '#00e5ff', high52: 615.0, low52: 320.0, priceEst: 590.0, ath: 602.95, atl: 17.50 },
+  { symbol: 'COIN', name: 'Coinbase Global',      exchange: 'NASDAQ:COIN', color: '#820ad1', high52: 290.0, low52: 95.0,   priceEst: 195.0, ath: 429.54, atl: 31.55 },
+  { symbol: 'SPY',  name: 'S&P 500 ETF',          exchange: 'AMEX:SPY',    color: '#00ff88', high52: 590.0, low52: 450.0, priceEst: 582.0, ath: 588.00, atl: 42.00 },
+  { symbol: 'QQQ',  name: 'Invesco QQQ Trust',    exchange: 'NASDAQ:QQQ',  color: '#00e5ff', high52: 510.0, low52: 380.0, priceEst: 498.0, ath: 503.50, atl: 19.80 }
 ];
 
 const STORAGE = {
-  KEY:      'stock_api_key',
-  SYMBOL:   'active_symbol',
-  INTERVAL: 'stock_interval',
-  THEME:    'stock_theme',
-  AUDIO:    'stock_audio',
+  KEY:       'stock_api_key',
+  SYMBOL:    'active_symbol',
+  TIMEFRAME: 'active_timeframe',
+  INTERVAL:  'stock_interval',
+  THEME:     'stock_theme',
+  AUDIO:     'stock_audio',
+};
+
+// ─── COMPREHENSIVE MULTI-TIMEFRAME QUANT CONFIG ──────────────────────────────
+const TIMEFRAME_CONFIG = {
+  '1m': {
+    label: '1m', badge: '1m · 1 Minuto (HFT Scalp)',
+    count: 50, volPct: 0.0018, stepMs: 60 * 1000,
+    tvChart: '1', tvTech: '1m',
+    formatTick: d => d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
+    formatFull: d => d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  },
+  '5m': {
+    label: '5m', badge: '5m · 5 Minutos (Micro OB)',
+    count: 50, volPct: 0.0035, stepMs: 5 * 60 * 1000,
+    tvChart: '5', tvTech: '5m',
+    formatTick: d => d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
+    formatFull: d => d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
+  },
+  '15m': {
+    label: '15m', badge: '15m · 15 Minutos (Sesión NY/LON)',
+    count: 48, volPct: 0.0065, stepMs: 15 * 60 * 1000,
+    tvChart: '15', tvTech: '15m',
+    formatTick: d => d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
+    formatFull: d => `${d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short' })} ${d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })}`
+  },
+  '30m': {
+    label: '30m', badge: '30m · 30 Minutos (Swing Corto)',
+    count: 48, volPct: 0.0095, stepMs: 30 * 60 * 1000,
+    tvChart: '30', tvTech: '30m',
+    formatTick: d => d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
+    formatFull: d => `${d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short' })} ${d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })}`
+  },
+  '1h': {
+    label: '1h', badge: '1h · 1 Hora (Estructura H1)',
+    count: 48, volPct: 0.014, stepMs: 60 * 60 * 1000,
+    tvChart: '60', tvTech: '1h',
+    formatTick: d => `${d.getDate()} ${d.toLocaleDateString('es-CO', { month: 'short' })}`,
+    formatFull: d => `${d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short' })} ${d.getHours()}:00`
+  },
+  '4h': {
+    label: '4h', badge: '4h · 4 Horas (Estructura H4)',
+    count: 45, volPct: 0.022, stepMs: 4 * 60 * 60 * 1000,
+    tvChart: '240', tvTech: '4h',
+    formatTick: d => `${d.getDate()} ${d.toLocaleDateString('es-CO', { month: 'short' })}`,
+    formatFull: d => `${d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short' })} ${d.getHours()}:00`
+  },
+  '1D': {
+    label: '1D', badge: '1D · 1 Día (Daily Bias)',
+    count: 48, volPct: 0.028, stepMs: 24 * 60 * 60 * 1000,
+    tvChart: 'D', tvTech: '1D',
+    formatTick: d => `${d.getDate()} ${d.toLocaleDateString('es-CO', { month: 'short' })}`,
+    formatFull: d => d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' })
+  },
+  '1W': {
+    label: '1W', badge: '1S · 1 Semana (Macro 52S)',
+    count: 52, volPct: 0.052, stepMs: 7 * 24 * 60 * 60 * 1000,
+    tvChart: 'W', tvTech: '1W',
+    formatTick: d => `${d.toLocaleDateString('es-CO', { month: 'short' })} ${d.getFullYear().toString().slice(2)}`,
+    formatFull: d => `Semana ${d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' })}`
+  },
+  '1M': {
+    label: '1M', badge: '1M · 1 Mes (Macro Mensual)',
+    count: 48, volPct: 0.085, stepMs: 30.5 * 24 * 60 * 60 * 1000,
+    tvChart: 'M', tvTech: '1M',
+    formatTick: d => `${d.toLocaleDateString('es-CO', { month: 'short' })} ${d.getFullYear().toString().slice(2)}`,
+    formatFull: d => d.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' })
+  },
+  '1Y': {
+    label: '1Y', badge: '1A · 1 Año (Velas Anuales)',
+    count: 14, volPct: 0.26, stepMs: 365.25 * 24 * 60 * 60 * 1000,
+    tvChart: '12M', tvTech: '1M',
+    formatTick: d => `${d.getFullYear()}`,
+    formatFull: d => `Año ${d.getFullYear()}`
+  },
+  'ALL': {
+    label: 'ALL', badge: 'TODO · Histórico Total (ATL a ATH)',
+    count: 24, volPct: 0.35, stepMs: 365.25 * 24 * 60 * 60 * 1000,
+    tvChart: '12M', tvTech: '1M',
+    formatTick: d => `${d.getFullYear()}`,
+    formatFull: d => `Histórico ${d.getFullYear()}`
+  }
 };
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
-let currentSymbol   = localStorage.getItem(STORAGE.SYMBOL) || 'TSLA';
-let currentName     = 'Tesla, Inc.';
-let currentExchange = 'NASDAQ:TSLA';
-let lastPrice       = null;
+let currentSymbol    = localStorage.getItem(STORAGE.SYMBOL) || 'TSLA';
+let currentTimeframe = localStorage.getItem(STORAGE.TIMEFRAME) || '1D';
+let currentName      = 'Tesla, Inc.';
+let currentExchange  = 'NASDAQ:TSLA';
+let lastPrice        = null;
 let currentRadarFilter = 'floors';
-let audioEnabled    = localStorage.getItem(STORAGE.AUDIO) !== 'false';
-let audioCtx        = null;
-let syntheticCandles= [];
+let audioEnabled     = localStorage.getItem(STORAGE.AUDIO) !== 'false';
+let audioCtx         = null;
+let syntheticCandles = [];
 
 const $ = id => document.getElementById(id);
 const num = v => { const n = Number(v); return Number.isFinite(n) && v !== '' ? n : null; };
@@ -921,10 +1086,37 @@ function selectSymbol(sym, name, ex) {
 
   const meta = MARKET_STOCKS.find(s => s.symbol === currentSymbol) || { priceEst: 150.0 };
   lastPrice = meta.priceEst;
-  generateSyntheticCandles(currentSymbol, meta.priceEst);
+  generateSyntheticCandles(currentSymbol, meta.priceEst, currentTimeframe);
   refreshQuote();
   if (navigator.vibrate) navigator.vibrate(15);
   soundClick();
+}
+
+// ─── TIMEFRAME SELECTION ─────────────────────────────────────────────────────
+function setTimeframe(tf) {
+  if (!TIMEFRAME_CONFIG[tf]) return;
+  currentTimeframe = tf;
+  localStorage.setItem(STORAGE.TIMEFRAME, tf);
+
+  document.querySelectorAll('.tf-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tf === tf);
+  });
+
+  const cfg = TIMEFRAME_CONFIG[tf];
+  if ($('activeTfBadge')) $('activeTfBadge').textContent = cfg.badge;
+  if ($('tvActiveTfBadge')) $('tvActiveTfBadge').textContent = cfg.badge;
+
+  soundClick();
+  showToast(`⏱ Temporalidad: ${cfg.badge}`);
+
+  const meta = MARKET_STOCKS.find(s => s.symbol === currentSymbol) || { priceEst: 150 };
+  const curP = lastPrice || meta.priceEst;
+  generateSyntheticCandles(currentSymbol, curP, currentTimeframe);
+  evaluateQuantModels(curP, { h: curP * 1.018, l: curP * 0.982, pc: curP * 0.995 });
+
+  if ($('viewTradingView') && $('viewTradingView').style.display !== 'none') {
+    renderTradingViewWidgets();
+  }
 }
 
 function handleSearch() {
@@ -961,8 +1153,12 @@ $('clearKey').addEventListener('click', () => {
   $('status').textContent = 'Sin clave'; $('status').className = 'pill';
 });
 
-// ─── TRADINGVIEW EMBEDDED WIDGETS ────────────────────────────────────────────
+// ─── TRADINGVIEW EMBEDDED WIDGETS (MULTI-TIMEFRAME SYNC) ─────────────────────
 function renderTradingViewWidgets() {
+  const cfg = TIMEFRAME_CONFIG[currentTimeframe] || TIMEFRAME_CONFIG['1D'];
+  const tvInterval = cfg.tvChart || 'D';
+  const tvTech = cfg.tvTech || '1D';
+
   const c = $('chart'); c.replaceChildren();
   const w = document.createElement('div'); w.className = 'tradingview-widget-container';
   const t = document.createElement('div'); t.className = 'tradingview-widget-container__widget';
@@ -972,7 +1168,7 @@ function renderTradingViewWidgets() {
   s.textContent = JSON.stringify({
     symbol: currentExchange,
     width: '100%', height: 260,
-    interval: 'D',
+    interval: tvInterval,
     timezone: 'America/New_York',
     theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light',
     style: '1',
@@ -992,7 +1188,7 @@ function renderTradingViewWidgets() {
   sg.textContent = JSON.stringify({
     symbol: currentExchange,
     width: '100%', height: 220,
-    interval: '1D',
+    interval: tvTech,
     colorTheme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light',
     isTransparent: true, locale: 'es'
   });
@@ -1016,37 +1212,77 @@ function renderScreener() {
   w.append(t, s); c.append(w);
 }
 
-// ─── HARMONIC CONTINUOUS OHLCV GENERATOR ANCHORED TO CURRENT PRICE ───────────
-function generateSyntheticCandles(sym, targetPrice) {
-  const meta = MARKET_STOCKS.find(s => s.symbol === sym) || { priceEst: 150.0 };
+// ─── MULTI-TIMEFRAME CONTINUOUS OHLCV GENERATOR ─────────────────────────────
+function generateSyntheticCandles(sym, targetPrice, tfKey) {
+  const tf = tfKey || currentTimeframe || '1D';
+  const cfg = TIMEFRAME_CONFIG[tf] || TIMEFRAME_CONFIG['1D'];
+  const meta = MARKET_STOCKS.find(s => s.symbol === sym) || {
+    priceEst: 150.0, low52: 100, high52: 200, ath: 250, atl: 20
+  };
   const finalPrice = targetPrice || lastPrice || meta.priceEst;
-  const count = 42;
+  const count = cfg.count || 48;
   syntheticCandles = [];
 
-  // Construct a smooth walk that terminates EXACTLY at finalPrice
-  const prices = [finalPrice];
-  let p = finalPrice;
-  for (let i = 0; i < count - 1; i++) {
-    const wave = Math.sin(i / 3.2) * 0.007;
-    const noise = (Math.random() - 0.49) * 0.012;
-    p = p / (1 + wave + noise);
-    prices.unshift(p);
+  const now = Date.now();
+  const prices = new Array(count);
+  prices[count - 1] = finalPrice;
+
+  if (tf === '1Y' || tf === 'ALL') {
+    // Macro multi-year / All-time view (ATL to ATH)
+    const atl = meta.atl || (meta.low52 * 0.45);
+    const ath = Math.max(meta.ath || (meta.high52 * 1.25), finalPrice);
+    for (let i = 0; i < count - 1; i++) {
+      const progress = i / (count - 1);
+      const baseline = atl + (ath - atl) * Math.sin(progress * Math.PI * 0.85);
+      const wave = Math.sin(i / 1.8) * (ath - atl) * 0.08;
+      const noise = (Math.random() - 0.48) * (ath - atl) * 0.05;
+      prices[i] = Math.max(atl * 0.95, baseline + wave + noise);
+    }
+  } else if (tf === '1W') {
+    // 52-Week Macro Cycle (low52 to high52)
+    const low52 = meta.low52 || (finalPrice * 0.65);
+    const high52 = Math.max(meta.high52 || (finalPrice * 1.2), finalPrice);
+    let p = finalPrice;
+    for (let i = count - 2; i >= 0; i--) {
+      const wave = Math.sin((count - 1 - i) / 4.5) * 0.022;
+      const noise = (Math.random() - 0.49) * 0.038;
+      p = p / (1 + wave + noise);
+      p = Math.max(low52 * 0.96, Math.min(high52 * 1.05, p));
+      prices[i] = p;
+    }
+  } else {
+    // Intraday (1m, 5m, 15m, 30m, 1h, 4h) and Daily (1D)
+    let p = finalPrice;
+    const vol = cfg.volPct || 0.02;
+    for (let i = count - 2; i >= 0; i--) {
+      const wave = Math.sin((count - 1 - i) / 3.2) * (vol * 0.65);
+      const noise = (Math.random() - 0.49) * (vol * 1.2);
+      p = p / (1 + wave + noise);
+      prices[i] = p;
+    }
   }
 
+  // Construct candle objects with accurate time stamps
   for (let i = 0; i < count; i++) {
     const close = prices[i];
     const open = (i === 0) ? close * 0.998 : prices[i - 1];
     const spread = Math.abs(close - open);
-    const wickUp = (Math.random() * 0.005 + 0.002) * close + (spread * 0.15);
-    const wickDn = (Math.random() * 0.005 + 0.002) * close + (spread * 0.15);
+    const wickFactor = (cfg.volPct || 0.02) * 0.4;
+    const wickUp = (Math.random() * wickFactor + wickFactor * 0.3) * close + (spread * 0.15);
+    const wickDn = (Math.random() * wickFactor + wickFactor * 0.3) * close + (spread * 0.15);
     const high = Math.max(open, close) + wickUp;
     const low = Math.min(open, close) - wickDn;
-    const vol = Math.floor(60000 + Math.random() * 140000);
-    syntheticCandles.push({ open, high, low, close, vol });
+    const vol = Math.floor(50000 + Math.random() * 250000 * (1 + (cfg.volPct || 0.02) * 20));
+
+    const candleTime = new Date(now - (count - 1 - i) * cfg.stepMs);
+    const timeLabel = cfg.formatTick(candleTime);
+    const timeFull = cfg.formatFull(candleTime);
+
+    syntheticCandles.push({ open, high, low, close, vol, timeLabel, timeFull, time: candleTime });
   }
 }
 
-// ─── HIGH-PRECISION CANVAS CHART (ZERO CLIPPING / SMOOTH SCALE) ──────────────
+// ─── HIGH-PRECISION MULTI-TIMEFRAME CANVAS CHART ─────────────────────────────
 function renderCanvasChart() {
   const canvas = $('quantCanvas');
   if (!canvas) return;
@@ -1063,7 +1299,7 @@ function renderCanvasChart() {
 
   if (syntheticCandles.length < 5) return;
 
-  const padT = 16, padB = 22, padL = 6, padR = 52;
+  const padT = 18, padB = 26, padL = 6, padR = 52;
   const plotW = W - padL - padR;
   const plotH = H - padT - padB;
 
@@ -1162,6 +1398,38 @@ function renderCanvasChart() {
     const bodyH = Math.max(2, Math.abs(yC - yO));
     ctx.fillRect(x - barW / 2, bodyTop, barW, bodyH);
   });
+
+  // Time Axis Baseline
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(padL, padT + plotH);
+  ctx.lineTo(W - padR, padT + plotH);
+  ctx.stroke();
+
+  // Time Axis Ticks & Labels
+  ctx.fillStyle = '#64748b';
+  ctx.font = '8px monospace';
+  ctx.textAlign = 'center';
+  const tickStep = Math.max(1, Math.floor(n / 6));
+  for (let i = 0; i < n; i += tickStep) {
+    const x = getX(i);
+    const c = syntheticCandles[i];
+    if (c && c.timeLabel) {
+      ctx.beginPath();
+      ctx.moveTo(x, padT + plotH);
+      ctx.lineTo(x, padT + plotH + 3);
+      ctx.stroke();
+      ctx.fillText(c.timeLabel, x, H - 7);
+    }
+  }
+  ctx.textAlign = 'left';
+
+  // Canvas Watermark
+  const cfg = TIMEFRAME_CONFIG[currentTimeframe] || TIMEFRAME_CONFIG['1D'];
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.28)';
+  ctx.font = '8.5px monospace';
+  ctx.fillText(`${currentSymbol} · ${cfg.badge}`, padL + 6, padT - 4);
 }
 
 // ─── CANVAS TOOLTIP & CROSSHAIR ──────────────────────────────────────────────
@@ -1178,11 +1446,14 @@ $('quantCanvas').addEventListener('mousemove', e => {
 
   const tip = $('chartTooltip');
   tip.style.display = 'block';
-  tip.style.left = `${Math.min(rect.width - 150, Math.max(8, x - 60))}px`;
+  tip.style.left = `${Math.min(rect.width - 165, Math.max(8, x - 70))}px`;
   tip.innerHTML = `
-    <b>Vela #${idx+1}</b><br>
+    <div style="color:var(--cyan);font-weight:900;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:2px;margin-bottom:3px;">
+      ${c.timeFull || `Vela #${idx+1}`} (${currentTimeframe})
+    </div>
     O: ${money(c.open)} | H: ${money(c.high)}<br>
-    L: ${money(c.low)} | C: <b>${money(c.close)}</b>
+    L: ${money(c.low)} | C: <b style="color:${c.close >= c.open ? 'var(--green)' : 'var(--red)'}">${money(c.close)}</b><br>
+    <span style="color:var(--text2)">Vol: ${c.vol.toLocaleString()}</span>
   `;
 });
 $('quantCanvas').addEventListener('mouseleave', () => { $('chartTooltip').style.display = 'none'; });
@@ -1294,7 +1565,7 @@ function evaluateQuantModels(currentPrice, d) {
   let winProb = 0.65;
   let rrRatio = 2.8;
 
-  if (floorProb >= 70) {
+  if (floorProb >= 68 && posPct <= 45) {
     // 🟢 FLOOR CONFIRMED
     $('gaugeStatusText').textContent = 'SUELO CONFIRMADO / COMPRA ASIMÉTRICA';
     $('gaugeStatusText').style.color = 'var(--green)';
@@ -1316,7 +1587,7 @@ function evaluateQuantModels(currentPrice, d) {
 
     soundFloorDing();
 
-  } else if (ceilProb >= 70 && zscore >= 1.5 && rsi >= 65) {
+  } else if ((ceilProb >= 68 || posPct >= 85) && (rsi >= 64 || zscore >= 1.4)) {
     // 🔴 CEILING CONFIRMED (OVERBOUGHT EXHAUSTION)
     $('gaugeStatusText').textContent = 'TECHO CONFIRMADO / DISTRIBUCIÓN';
     $('gaugeStatusText').style.color = 'var(--red)';
@@ -1338,7 +1609,7 @@ function evaluateQuantModels(currentPrice, d) {
 
     soundCeilingAlert();
 
-  } else if (posPct >= 80 && rsi < 65) {
+  } else if (posPct >= 75) {
     // 🔥 ATH BREAKOUT & EXPANSION
     $('gaugeStatusText').textContent = 'EXPANSIÓN EN MÁXIMOS / MOMENTUM ATH';
     $('gaugeStatusText').style.color = 'var(--gold)';
@@ -1349,7 +1620,7 @@ function evaluateQuantModels(currentPrice, d) {
     sigBadge.className = 'badge-signal ath';
     sigBadge.textContent = '📈 COMPRA EN RUPTURA (ATH MOMENTUM)';
     $('signalScore').textContent = `Confluencia: 78%`;
-    sigVerdict.innerHTML = `El activo cotiza en zona de <b>Expansión Alcista (ATH)</b> con RSI saludable (${rsi.toFixed(1)}) y sin agotamiento distributivo. Mantener con trailing stop loss.`;
+    sigVerdict.innerHTML = `El activo cotiza en zona de <b>Expansión Alcista (ATH)</b> con RSI en ${rsi.toFixed(1)} (${posPct.toFixed(0)}% del rango 52S) y sin agotamiento distributivo.`;
 
     sl = currentPrice * 0.97;
     const risk = entry - sl;
@@ -1359,17 +1630,18 @@ function evaluateQuantModels(currentPrice, d) {
     rrRatio = 3.0;
 
   } else {
-    // ⚖️ EQUILIBRIUM ZONE
-    $('gaugeStatusText').textContent = 'ZONA DE VALOR JUSTO / EQUILIBRIO';
-    $('gaugeStatusText').style.color = 'var(--gold)';
-    badge.textContent = '⚖️ PRECIO EN EQUILIBRIO';
+    // ⚖️ EQUILIBRIUM / DISCOUNT ZONE
+    const isDiscount = posPct < 40;
+    $('gaugeStatusText').textContent = isDiscount ? 'ZONA DE DESCUENTO INSTITUCIONAL' : 'ZONA DE VALOR JUSTO / EQUILIBRIO';
+    $('gaugeStatusText').style.color = isDiscount ? 'var(--cyan)' : 'var(--gold)';
+    badge.textContent = isDiscount ? '🔹 EN DESCUENTO' : '⚖️ PRECIO EN EQUILIBRIO';
     badge.className = 'pill';
 
     box.className = 'signal-box neutral';
     sigBadge.className = 'badge-signal neutral';
     sigBadge.textContent = '⏸ NEUTRAL / CONSOLIDACIÓN';
     $('signalScore').textContent = 'Confluencia: 54%';
-    sigVerdict.innerHTML = `Activo en rango de equilibrio (${posPct.toFixed(0)}% del rango 52S) con RSI en ${rsi.toFixed(1)}. Esperar llegada a <b>Suelo</b> ($${low52.toFixed(2)}) o <b>Techo</b> ($${high52.toFixed(2)}).`;
+    sigVerdict.innerHTML = `Activo en rango de ${isDiscount ? 'descuento' : 'equilibrio'} (${posPct.toFixed(0)}% del rango 52S) con RSI en ${rsi.toFixed(1)}. Esperar llegada a <b>Suelo</b> ($${low52.toFixed(2)}) o <b>Techo</b> ($${high52.toFixed(2)}).`;
 
     sl = low * 0.985;
     const risk = Math.abs(entry - sl) || (entry * 0.02);
@@ -1510,7 +1782,7 @@ async function refreshQuote() {
     $('change').className = 'neutral muted';
     $('updated').textContent = `Actualizado: ${new Date().toLocaleTimeString('es-CO')}`;
 
-    generateSyntheticCandles(currentSymbol, est);
+    generateSyntheticCandles(currentSymbol, est, currentTimeframe);
     evaluateQuantModels(est, { h: est * 1.018, l: est * 0.982, pc: est * 0.995 });
     return;
   }
@@ -1531,8 +1803,8 @@ async function refreshQuote() {
     $('updated').textContent = `Actualizado: ${new Date().toLocaleTimeString('es-CO')}`;
     $('status').textContent = '● FEED EN VIVO'; $('status').className = 'pill live';
 
-    // Regenerate smooth candles ending exactly at live quote price
-    generateSyntheticCandles(currentSymbol, d.c);
+    // Regenerate smooth candles ending exactly at live quote price in active timeframe
+    generateSyntheticCandles(currentSymbol, d.c, currentTimeframe);
     evaluateQuantModels(d.c, d);
   } catch (err) {
     $('status').textContent = 'Offline/Demo'; $('status').className = 'pill';
@@ -1548,6 +1820,23 @@ $('refresh').addEventListener('click', () => { refreshQuote(); soundClick(); });
 
   const savedKey = getKey();
   if (savedKey) $('apiKeyInput').value = savedKey;
+
+  // Setup timeframe buttons in both views
+  document.querySelectorAll('.tf-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      setTimeframe(btn.dataset.tf);
+    });
+  });
+
+  // Apply saved timeframe
+  const savedTf = localStorage.getItem(STORAGE.TIMEFRAME) || '1D';
+  currentTimeframe = savedTf;
+  document.querySelectorAll('.tf-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tf === savedTf);
+  });
+  const tfCfg = TIMEFRAME_CONFIG[savedTf] || TIMEFRAME_CONFIG['1D'];
+  if ($('activeTfBadge')) $('activeTfBadge').textContent = tfCfg.badge;
+  if ($('tvActiveTfBadge')) $('tvActiveTfBadge').textContent = tfCfg.badge;
 
   selectSymbol(currentSymbol, currentName, currentExchange);
   renderRadar();

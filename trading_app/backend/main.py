@@ -81,8 +81,13 @@ def fetch_historical_ohlcv(symbol: str, timeframe: str = "15m", period: str = "5
         "15m": ("15m", "5d"),
         "30m": ("30m", "1mo"),
         "1h": ("1h", "1mo"),
+        "4h": ("1h", "2mo"),
         "1d": ("1d", "1y"),
         "1wk": ("1wk", "2y"),
+        "1mo": ("1mo", "5y"),
+        "1y": ("1mo", "max"),
+        "ALL": ("1mo", "max"),
+        "max": ("1mo", "max"),
     }
 
     interval, auto_period = interval_map.get(timeframe, ("15m", "5d"))
