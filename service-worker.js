@@ -1,4 +1,4 @@
-const CACHE = 'stock-institucional-v5';
+const CACHE = 'stock-hedgefund-v6';
 const NETWORK_FIRST = ['/', '/index.html'];
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
 

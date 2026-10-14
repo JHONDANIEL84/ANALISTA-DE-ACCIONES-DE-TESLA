@@ -1,59 +1,65 @@
-# TSLA & NU Analista — Analista de Acciones y Radar ATH/ATL
+# TSLA & NU Terminal Cuantitativa Institucional (Hedge Fund Standard)
 
-> **PWA instalable** para vigilar acciones de **Tesla (TSLA)**, **Nubank (NU)** y escanear el mercado en busca de acciones en **máximos históricos (52-Week High / ATH)** y **mínimos históricos (52-Week Low / ATL)** en tiempo real.
+> **Terminal web y PWA móvil de grado institucional** diseñada con estándares de fondos de cobertura cuantitativos (Wall Street Quantitative Trading Desk). Combina **Detección Algorítmica de Suelos y Techos Extremos**, **Smart Money Concepts (SMC)**, **VWAP Multi-Sigma**, **Gestión de Capital por Criterio de Kelly** y **Radar de Oportunidades Asimétricas** para **Tesla (TSLA)**, **Nubank (NU)** y las principales acciones del mercado de EE.UU.
 
-![TSLA & NU](https://img.shields.io/badge/TSLA%20%26%20NU-Analista-820ad1?style=for-the-badge&logo=tesla&logoColor=white)
-![GitHub Pages](https://img.shields.io/badge/Deploy-GitHub%20Pages-08080d?style=for-the-badge&logo=github)
-
----
-
-## ✨ Nuevas Características
-
-| Función | Detalle |
-|---|---|
-| 🟣 **Nubank (NU)** | Soporte nativo para Nu Holdings Ltd (NYSE: NU) con cotización, métricas y gráfico dedicado |
-| 🔴 **Tesla (TSLA)** | Análisis completo de Tesla Inc. (NASDAQ: TSLA) en tiempo real |
-| 🎯 **Radar de Máximos y Mínimos** | Detección de acciones cerca del récord histórico (ATH / 52W High) o en mínimos anuales (ATL / 52W Low) |
-| 📊 **Barra de Rango 52 Semanas** | Visualizador de posición de precio dentro de su rango anual + cálculo de distancia al récord en % |
-| 🔍 **Buscador Universal de Tickers** | Busca cualquier acción de EE.UU. (NVDA, AAPL, MELI, PLTR, AMZN, META, etc.) |
-| 📈 **Escáner Técnico TradingView** | Explorador de mercado interactivo con filtros de volumen, nuevos máximos y mínimos |
-| 🔔 **Alertas Push por Acción** | Configura umbrales de precio independientes para cada acción que sigas |
-| ⚡ **Sparkline de Sesión** | Historial intradía dinámico generado en SVG puro |
-| 🌙 **Tema Oscuro / Claro** | Interfaz personalizable con persistencia en tu dispositivo |
+![Hedge Fund Grade](https://img.shields.io/badge/Wall%20Street-Quantitative%20Desk-00ff88?style=for-the-badge&logo=tradingview&logoColor=black)
+![TSLA & NU](https://img.shields.io/badge/TSLA%20%26%20NU-Institutional%20Alpha-820ad1?style=for-the-badge&logo=tesla&logoColor=white)
+![GitHub Pages](https://img.shields.io/badge/Deploy-GitHub%20Pages-050508?style=for-the-badge&logo=github)
 
 ---
 
-## 🚀 Acceso y Uso
+## 🌟 Modelos e Indicadores Cuantitativos Institucionales
 
-### 🌐 Abrir en la Web
-Puedes abrir la aplicación directamente en cualquier navegador:
+| Herramienta Institucional | Fundamento Matemático & Operativo | Aplicación en Trading |
+|---|---|---|
+| 🟢 **Detección de Suelo Extremo** | Z-Score $\le -1.8\sigma$ + RSI Sobrevendido + Acumulación CMF | Identifica puntos de agotamiento de ventas para compras asimétricas de bajo riesgo |
+| 🔴 **Detección de Techo Extremo** | Z-Score $\ge +2.0\sigma$ + RSI $>70$ + Divergencia de Volumen | Identifica zonas de distribución de los grandes fondos para toma de beneficios o ventas en corto |
+| 📊 **Termómetro de Valoración Dual** | Medición compuesta en 5 fases (Suelo, Descuento, Equilibrio, Premium, Techo) | Evita comprar en zonas de sobrecompra y optimiza entradas en descuento institucional |
+| ⚡ **Smart Money Concepts (SMC)** | Order Blocks (OBs), Fair Value Gaps (FVG), BOS & CHoCH | Rastrea las huellas de liquidez de los creadores de mercado (Market Makers) |
+| 📈 **VWAP Multi-Sigma (±1σ, ±2σ)** | Precio Ponderado por Volumen con bandas de volatilidad intradía | Proporciona el valor intrínseco de referencia para las instituciones financieras |
+| 🧮 **Exponente de Hurst ($H$)** | Análisis de Rango Reescalado ($R/S$) para régimen de mercado | Distingue regímenes de reversión a la media ($H < 0.5$) de regímenes tendenciales ($H > 0.5$) |
+| 🛡️ **Criterio de Kelly ($f^*$)** | Asignación matemática óptima de capital: $f^* = \frac{p(b+1)-1}{b}$ | Maximiza el crecimiento geométrico del capital y calcula el Half-Kelly para proteger contra drawdowns |
+| 🌐 **Macro Hub & Dark Pool Flow** | VIX, Rendimiento US 10Y, Bloques de Dark Pool y Gamma Exposure (GEX) | Contextualiza la microestructura con el apetito de riesgo global de Wall Street |
+
+---
+
+## 📱 Acceso Inmediato en tu Celular (PWA Web)
+
+Puedes acceder a la terminal institucional directamente en cualquier navegador o instalarla como aplicación móvil en tu teléfono:
+
 👉 **[https://jhondaniel84.github.io/ANALISTA-DE-ACCIONES-DE-TESLA/](https://jhondaniel84.github.io/ANALISTA-DE-ACCIONES-DE-TESLA/)**
 
-### 📱 Instalar en tu Celular (PWA)
-1. Abre el enlace en **Chrome** (Android) o **Safari** (iPhone).
-2. Toca el menú de opciones (tres puntos en Android o botón Compartir en iPhone).
-3. Selecciona **"Añadir a la pantalla de inicio"** / **"Instalar aplicación"**.
+### 📲 Cómo Instalarla en tu Teléfono
+- **iPhone / Safari**: Toca el botón Compartir (cuadrado con flecha hacia arriba) y selecciona **"Añadir a la pantalla de inicio"**.
+- **Android / Chrome**: Toca los 3 puntos superiores y selecciona **"Instalar aplicación"** / **"Añadir a pantalla de inicio"**.
 
 ---
 
-## 🔑 Configurar tu Clave de Finnhub (Gratis)
+## 💻 Entorno Python Standalone (FastAPI + Streamlit)
 
-1. Crea tu cuenta gratuita en [finnhub.io](https://finnhub.io).
-2. Copia tu API key del Dashboard.
-3. En la app, baja hasta la sección **Configuración**, pega tu clave y presiona **"Guardar configuración"**.
+Si deseas ejecutar la terminal en tu entorno local con soporte de scripts cuantitativos:
+
+```bash
+# 1. Instalar dependencias
+pip install -r trading_app/requirements.txt
+
+# 2. Iniciar servidor FastAPI
+python -m uvicorn trading_app.backend.main:app --host 0.0.0.0 --port 8000 --reload
+
+# 3. Iniciar terminal Streamlit
+streamlit run trading_app/frontend/app.py
+```
 
 ---
 
-## 🛠 Tecnologías
+## 🔑 Datos en Tiempo Real (Finnhub API)
 
-- **HTML5 + CSS3 moderno** (Glassmorphism, CSS Grid, CSS Variables)
-- **JavaScript Vanilla ES6+** (sin dependencias pesadas, carga ultrarrápida)
-- **Finnhub API** (cotizaciones y métricas de 52 semanas)
-- **TradingView Widgets** (gráficos avanzados y screener técnico en tiempo real)
-- **Service Worker v3** (soporte offline y caching inteligente)
+La aplicación cuenta con un **motor cuantitativo autónomo** de simulación y análisis técnico que funciona sin configuración previa. Si deseas datos en tiempo real de Wall Street:
+1. Obtén tu clave gratuita en [finnhub.io](https://finnhub.io).
+2. En la app móvil o web, ve a **Configuración** y pega tu clave.
 
 ---
 
 ## ⚠️ Aviso Legal
 
-Esta aplicación es para fines **estrictamente informativos y analíticos**. No constituye asesoría financiera ni recomendación de inversión.
+Esta aplicación fue desarrollada con fines estrictamente investigativos, analíticos y educativos de nivel cuantitativo. **No constituye asesoría financiera ni recomendación formal de inversión**.

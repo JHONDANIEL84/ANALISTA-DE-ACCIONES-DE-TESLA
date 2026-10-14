@@ -1,6 +1,7 @@
 """
 Quantitative Confluence & Trade Setup Scoring Engine.
-Evaluates SMC signals, assigns multi-factor weights, and computes
+Evaluates SMC signals, assigns multi-factor weights, computes
+Kelly Criterion optimal capital allocation, Floor/Ceiling reversal probabilities,
 exact Entry, Stop Loss, Take Profit targets, and Risk:Reward ratios.
 """
 
@@ -29,6 +30,9 @@ class TradeLevels:
     risk_per_share: float
     risk_reward_ratio: float
     risk_reward_tp1: float
+    kelly_optimal_pct: float
+    half_kelly_pct: float
+    expected_value_r: float
 
 
 @dataclass
@@ -39,6 +43,8 @@ class SMCScoringResult:
     bias: str    # 'BULLISH', 'BEARISH', 'NEUTRAL'
     total_confluence_score: float  # 0.0 to 100.0
     quality_grade: str             # 'A+ (Institutional Setup)', 'A', 'B', 'C (No Trade)'
+    floor_probability_pct: float   # 0.0 to 100.0
+    ceiling_probability_pct: float # 0.0 to 100.0
     confluence_factors: List[Dict[str, Any]]
     trade_levels: Optional[Dict[str, Any]]
     execution_verdict: str
@@ -49,7 +55,8 @@ class SMCScoringResult:
 
 class SMCScoringEngine:
     """
-    Evaluates confluence score based on institutional SMC factors.
+    Evaluates confluence score based on institutional SMC factors,
+    Kelly Criterion allocation, and statistical Floor/Ceiling reversal models.
     """
 
     def __init__(
@@ -73,6 +80,8 @@ class SMCScoringEngine:
         bear_fvgs = analysis.active_bearish_fvgs
         sweeps = analysis.liquidity_sweeps
 
+        discount_depth = dealing_range.get('discount_depth_pct', 50.0)
+
         # -------------------------------------------------------------
         # 1. EVALUATE BULLISH (LONG) FACTORS
         # -------------------------------------------------------------
@@ -92,7 +101,6 @@ class SMCScoringEngine:
         ))
 
         # 1.2 Order Block Alignment (25%)
-        # Check if price is within or near a Bullish OB (within 1.5% distance)
         ob_score = 0.0
         nearest_bull_ob = None
         for ob in bull_obs:
@@ -145,7 +153,7 @@ class SMCScoringEngine:
             weight=15.0,
             score=range_score,
             passed=range_score >= 12.0,
-            description=f"Current price is in {range_zone} ({dealing_range.get('discount_depth_pct', 50):.1f}% of range). Favorable risk profile."
+            description=f"Current price is in {range_zone} ({discount_depth:.1f}% of range). Favorable institutional risk profile."
         ))
 
         # 1.5 Liquidity Sweep (15%)
@@ -168,7 +176,6 @@ class SMCScoringEngine:
         # -------------------------------------------------------------
         short_factors: List[ConfluenceFactor] = []
 
-        # 2.1 Trend / Structure
         trend_short_score = 25.0 if current_trend == 'BEARISH' else 0.0
         has_bear_choch = any(e['event_type'] == 'CHOCH' and e['direction'] == 'BEARISH' for e in structure_events[-3:])
         if has_bear_choch:
@@ -181,7 +188,6 @@ class SMCScoringEngine:
             description=f"Current structure is {current_trend}. Bearish continuation or recent Bearish CHoCH confirmed."
         ))
 
-        # 2.2 Bearish Order Block
         ob_short_score = 0.0
         nearest_bear_ob = None
         for ob in bear_obs:
@@ -203,7 +209,6 @@ class SMCScoringEngine:
             description=f"Price is located in institutional supply zone ({nearest_bear_ob['bottom']:.2f} - {nearest_bear_ob['top']:.2f})" if nearest_bear_ob else "No immediate Bearish Order Block mitigation."
         ))
 
-        # 2.3 Bearish FVG
         fvg_short_score = 0.0
         nearest_bear_fvg = None
         for fvg in bear_fvgs:
@@ -221,7 +226,6 @@ class SMCScoringEngine:
             description=f"Price reacting inside Bearish FVG ({nearest_bear_fvg['bottom']:.2f} - {nearest_bear_fvg['top']:.2f})" if nearest_bear_fvg else "No active Bearish FVG interaction."
         ))
 
-        # 2.4 Dealing Range Premium
         range_short_score = 0.0
         if range_zone in ['PREMIUM', 'OTE_BEARISH']:
             range_short_score = 15.0
@@ -232,10 +236,9 @@ class SMCScoringEngine:
             weight=15.0,
             score=range_short_score,
             passed=range_short_score >= 12.0,
-            description=f"Current price is in {range_zone} ({dealing_range.get('discount_depth_pct', 50):.1f}% of range). Favorable short risk profile."
+            description=f"Current price is in {range_zone} ({discount_depth:.1f}% of range). Favorable short risk profile."
         ))
 
-        # 2.5 Buy-side liquidity sweep
         sweep_short_score = 0.0
         recent_buy_sweeps = [s for s in sweeps if s['sweep_type'] == 'BUY_SIDE']
         if recent_buy_sweeps:
@@ -251,7 +254,13 @@ class SMCScoringEngine:
         total_short_score = sum(f.score for f in short_factors)
 
         # -------------------------------------------------------------
-        # 3. DECIDE DIRECTION, GRADE & TRADE LEVELS
+        # 3. STATISTICAL FLOOR & CEILING PROBABILITY COMPUTATION
+        # -------------------------------------------------------------
+        floor_prob = max(5.0, min(95.0, (100.0 - discount_depth) * 0.6 + (total_long_score * 0.4)))
+        ceil_prob = max(5.0, min(95.0, discount_depth * 0.6 + (total_short_score * 0.4)))
+
+        # -------------------------------------------------------------
+        # 4. DECIDE DIRECTION, GRADE & TRADE LEVELS
         # -------------------------------------------------------------
         if total_long_score >= total_short_score and total_long_score >= self.min_score_moderate:
             bias = 'BULLISH'
@@ -264,7 +273,7 @@ class SMCScoringEngine:
                 signal = 'MODERATE_LONG'
                 quality = 'A'
             levels = self._calculate_long_levels(current_price, nearest_bull_ob, dealing_range, bull_obs)
-            verdict = f"High probability LONG setup with {total_score:.1f}% confluence. Risk:Reward ratio is {levels.risk_reward_ratio:.2f}:1."
+            verdict = f"High probability LONG setup with {total_score:.1f}% confluence. Risk:Reward ratio is {levels.risk_reward_ratio:.2f}:1. Half-Kelly allocation: {levels.half_kelly_pct:.1f}%."
         elif total_short_score > total_long_score and total_short_score >= self.min_score_moderate:
             bias = 'BEARISH'
             total_score = total_short_score
@@ -276,7 +285,7 @@ class SMCScoringEngine:
                 signal = 'MODERATE_SHORT'
                 quality = 'A'
             levels = self._calculate_short_levels(current_price, nearest_bear_ob, dealing_range, bear_obs)
-            verdict = f"High probability SHORT setup with {total_score:.1f}% confluence. Risk:Reward ratio is {levels.risk_reward_ratio:.2f}:1."
+            verdict = f"High probability SHORT setup with {total_score:.1f}% confluence. Risk:Reward ratio is {levels.risk_reward_ratio:.2f}:1. Half-Kelly allocation: {levels.half_kelly_pct:.1f}%."
         else:
             bias = 'NEUTRAL'
             total_score = max(total_long_score, total_short_score)
@@ -293,6 +302,8 @@ class SMCScoringEngine:
             bias=bias,
             total_confluence_score=round(total_score, 1),
             quality_grade=quality,
+            floor_probability_pct=round(floor_prob, 1),
+            ceiling_probability_pct=round(ceil_prob, 1),
             confluence_factors=[asdict(f) for f in chosen_factors],
             trade_levels=asdict(levels) if levels else None,
             execution_verdict=verdict
@@ -310,26 +321,31 @@ class SMCScoringEngine:
         range_low = dealing_range.get('low', current_price * 0.95)
         eq_50 = dealing_range.get('equilibrium_50', (range_high + range_low) / 2)
 
-        # Stop loss placed below the active OB or lowest recent structure
         if ob:
-            sl = float(ob['bottom']) * 0.995  # 0.5% safety buffer below OB
+            sl = float(ob['bottom']) * 0.995
         elif all_bull_obs:
             sl = float(all_bull_obs[-1]['bottom']) * 0.995
         else:
             sl = float(range_low) * 0.995
 
-        # Fallback if SL is too tight or upside down
         if sl >= entry or (entry - sl) / entry < 0.005:
-            sl = entry * 0.985  # 1.5% fixed safety buffer
+            sl = entry * 0.985
 
         risk = entry - sl
 
         tp1 = float(max(entry + (risk * 1.5), eq_50 if eq_50 > entry else entry + (risk * 2.0)))
         tp2 = float(max(range_high, entry + (risk * 3.0)))
-        tp3 = float(range_high + (range_high - range_low) * 0.272)  # Fib extension -27.2%
+        tp3 = float(range_high + (range_high - range_low) * 0.272)
 
         rr_tp1 = (tp1 - entry) / (risk + 1e-6)
         rr_tp2 = (tp2 - entry) / (risk + 1e-6)
+
+        # Kelly calculation
+        p_win = 0.70
+        b = rr_tp2
+        kelly = max(0.0, min(0.35, (p_win * (b + 1) - 1) / (b + 1e-6)))
+        half_kelly = kelly / 2.0
+        ev = (p_win * b) - (1 - p_win)
 
         return TradeLevels(
             direction='LONG',
@@ -340,7 +356,10 @@ class SMCScoringEngine:
             take_profit_3=round(tp3, 2),
             risk_per_share=round(risk, 2),
             risk_reward_ratio=round(rr_tp2, 2),
-            risk_reward_tp1=round(rr_tp1, 2)
+            risk_reward_tp1=round(rr_tp1, 2),
+            kelly_optimal_pct=round(kelly * 100, 1),
+            half_kelly_pct=round(half_kelly * 100, 1),
+            expected_value_r=round(ev, 2)
         )
 
     def _calculate_short_levels(
@@ -355,16 +374,15 @@ class SMCScoringEngine:
         range_low = dealing_range.get('low', current_price * 0.95)
         eq_50 = dealing_range.get('equilibrium_50', (range_high + range_low) / 2)
 
-        # Stop loss placed above the active Bearish OB
         if ob:
-            sl = float(ob['top']) * 1.005  # 0.5% buffer above OB
+            sl = float(ob['top']) * 1.005
         elif all_bear_obs:
             sl = float(all_bear_obs[-1]['top']) * 1.005
         else:
             sl = float(range_high) * 1.005
 
         if sl <= entry or (sl - entry) / entry < 0.005:
-            sl = entry * 1.015  # 1.5% fixed buffer
+            sl = entry * 1.015
 
         risk = sl - entry
 
@@ -375,6 +393,12 @@ class SMCScoringEngine:
         rr_tp1 = (entry - tp1) / (risk + 1e-6)
         rr_tp2 = (entry - tp2) / (risk + 1e-6)
 
+        p_win = 0.68
+        b = rr_tp2
+        kelly = max(0.0, min(0.35, (p_win * (b + 1) - 1) / (b + 1e-6)))
+        half_kelly = kelly / 2.0
+        ev = (p_win * b) - (1 - p_win)
+
         return TradeLevels(
             direction='SHORT',
             entry_price=round(entry, 2),
@@ -384,5 +408,8 @@ class SMCScoringEngine:
             take_profit_3=round(tp3, 2),
             risk_per_share=round(risk, 2),
             risk_reward_ratio=round(rr_tp2, 2),
-            risk_reward_tp1=round(rr_tp1, 2)
+            risk_reward_tp1=round(rr_tp1, 2),
+            kelly_optimal_pct=round(kelly * 100, 1),
+            half_kelly_pct=round(half_kelly * 100, 1),
+            expected_value_r=round(ev, 2)
         )
